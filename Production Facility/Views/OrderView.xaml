@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Production_Facility.Views.ProductionOrderView"
+﻿<UserControl x:Class="Production_Facility.Views.OrderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -24,7 +24,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Margin="10" FontSize="20" Text="{Binding Name}" Foreground="Blue" FontWeight="Bold"/>
-            <ComboBox Name="mainComboBox"   ItemsSource="{Binding POrders}" SelectedItem="{Binding ProductionOrder}"  IsEnabled="True" >
+            <ComboBox Name="mainComboBox"   ItemsSource="{Binding Orders}" SelectedItem="{Binding Order}"  IsEnabled="True" >
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -83,12 +83,12 @@
                     </ComboBox>
                 </GroupBox>
                 <GroupBox Header="Quantity" Width="70">
-                    <TextBox Name="quantityTextBox" Text="{Binding ProductionOrder.Quantity}" />
+                    <TextBox Name="quantityTextBox" Text="{Binding Order.Quantity}" />
                 </GroupBox>
                 <GroupBox Header="Planned Date" Width="100">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding ProductionOrder.PlannedDate,StringFormat={}{0:yyyy-MM-dd}}"/>
-                        <DatePicker Name="planned_DatePicker" Width="30" SelectedDate="{Binding ProductionOrder.PlannedDate}"/>
+                        <TextBlock Text="{Binding Order.PlannedDate,StringFormat={}{0:yyyy-MM-dd}}"/>
+                        <DatePicker Name="planned_DatePicker" Width="30" SelectedDate="{Binding Order.PlannedDate}"/>
                     </StackPanel>
                 </GroupBox>
                 <Button Width="100" HorizontalAlignment="Left" Height="20" Content="LOAD ORDER" Margin="10" Command="{Binding LoadOrderCommand}">
@@ -117,10 +117,10 @@
                     <TextBox Name="itemName" Text="{Binding Item.Name}" />
                 </GroupBox>
                 <GroupBox Header="Unit" Width="70" IsEnabled="False">
-                    <TextBox Name="unit_TextBox" Text="{Binding Item.Unit}" HorizontalAlignment="Center" Width="Auto" />
+                    <TextBox Name="unit_TextBox" Text="{Binding Item.Unit}" Width="Auto" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"   />
                 </GroupBox>
                 <GroupBox Header="Order ID" Width="100" IsEnabled="False">
-                    <TextBox Name="id_TextBox" Text="{Binding ProductionOrder.OrderID}" Width="Auto" />
+                    <TextBox Name="id_TextBox" Text="{Binding Order.OrderID}" Width="Auto" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
                 </GroupBox>
                 <Button Width="100" HorizontalAlignment="Left" Height="20" Content="PRODUCE" FontWeight="Bold" Margin="10" Command="{Binding ProduceOrderCommand}">
                     <Button.CommandParameter>
@@ -134,7 +134,7 @@
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding Orders}" Grid.Row="3"/>
+            <DataGrid ItemsSource="{Binding Components}" Grid.Row="3"/>
         </Grid>
     </Border>
 </UserControl>

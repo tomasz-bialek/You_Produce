@@ -14,10 +14,17 @@ namespace Production_Facility.ViewModels
 {
     public class OrderViewModel : INotifyPropertyChanged
     {
-        
+        public OrderViewModel()
+        {
+            ComboBoxLoader = new RelayCommand(SetComboBox);
+            OrdersParamsLoader = new RelayCommand(SetOrdersParams);
+            SaveOrderCommand = new RelayCommand(SaveOrder);
+            //ProduceOrderCommand = new RelayCommand(ProduceOrder);
+        }
 
-        Recipe recipe = new Recipe();
-        RecipeViewModel recipeVM = new RecipeViewModel();
+
+        //Recipe recipe = new Recipe();
+        //RecipeViewModel recipeVM = new RecipeViewModel();
 
         private Order order;
 
@@ -28,26 +35,26 @@ namespace Production_Facility.ViewModels
             set
             {
                 order = value;
-                OnPropertyChanged("ProductionOrder");
+                OnPropertyChanged("Order");
             }
         }
 
-        private List<Order> pOrders;
+        private List<Order> orders;
 
-        public List<Order> POrders
+        public List<Order> Orders
         {
             get
 
             {
                 using (FacilityDBContext dbContext = new FacilityDBContext())
                 {
-                    return pOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    return orders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                 }
 
             }
             set
             {
-                pOrders = value;
+                orders = value;
             }
         }
         
@@ -107,11 +114,11 @@ namespace Production_Facility.ViewModels
             {
                 if (Order != null)
                 {
-                    Orders.Clear();
+                    Components.Clear();
                 }
                 else
                 {
-                    Orders = new ObservableCollection<RecipeComponent>();
+                    Components = new ObservableCollection<OrderComponent>();
                 }
 
 
@@ -123,14 +130,15 @@ namespace Production_Facility.ViewModels
 
                 var quantity = int.Parse(quantity_temp);
 
-                //var recipe = (from q in dbContext.Recipes where q.RecipeOwner == key select q).FirstOrDefault<Recipe>();
-
                 var recipe = dbContext.RecipeComponents.Where(q => q.OwnerKey == key).ToList();
 
                 foreach (var line in recipe)
                 {
-                    line.Quantity = line.Quantity * quantity;
-                    Orders.Add(line);
+                    var tempQuantity = line.Quantity * quantity;
+
+                    var oc = new OrderComponent(line.Line, line.OwnerKey, line.OwnerName, line.ComponentKey, line.ComponentName, tempQuantity);
+
+                    Components.Add(oc);
                 }
             }
 
@@ -155,7 +163,7 @@ namespace Production_Facility.ViewModels
 
                     var x = dbContext.Orders.Add(new Order(values[0].ToString(), Convert.ToInt32(values[1]), date));//, recipe.GetRecipeComposition(order)
 
-                    foreach (RecipeComponent rc in Orders)
+                    foreach (OrderComponent rc in Components)
                     {
                         var order = new OrderComponent(rc.Line, rc.OwnerKey, rc.OwnerName, x.OrderID, rc.ComponentKey, rc.ComponentName, rc.Quantity);
 
@@ -238,40 +246,46 @@ namespace Production_Facility.ViewModels
         //    }
 
         //}
-        //public void ProdOrderChosen(object obj)
-        //{
-        //    using (FacilityDBContext dbContext = new FacilityDBContext())
-        //    {
+        public void ProdOrderChosen(object obj)
+        {
+            using (FacilityDBContext dbContext = new FacilityDBContext())
+            {
 
 
-        //        if (Order != null)
-        //            Order.Clear();
+                if (Components != null)
+                    Components.Clear();
 
-        //        if(Int32.TryParse((string)obj, out int orderID))
-        //        {
-        //            Order = recipe.GetRecipe(productionOrder.OrderComposition);
-        //            ProductionOrder = dbContext.ProductionOrders.Where(q => q.OrderID == orderID).SingleOrDefault<ProductionOrder>();
-        //            Item = dbContext.Items.Where(i => i.Number == productionOrder.ItemKey).FirstOrDefault<Item>();
-        //        }
+                if (Int32.TryParse((string)obj, out int orderID))
+                {
+                    var orderComponents = dbContext.OrderComponents.Where(q => q.OrderId == orderID).ToList();
 
-
-        //        //int orderID = Convert.ToInt32((string)obj);
+                    Components = new ObservableCollection<OrderComponent>(orderComponents);
 
 
-        //    }
+                    //Order = recipe.GetRecipe(productionOrder.OrderComposition);
 
-        //}
-        //    public ICommand ProdOrderChosenCommand
-        //    {
-        //        get
-        //        {
-        //            if (_ProdOrderChosenCommand == null)
-        //            {
-        //                _ProdOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
-        //}
-        //            return _ProdOrderChosenCommand;
-        //        }
-        //    }
+                    Order = dbContext.Orders.SingleOrDefault(q => q.OrderID == orderID);
+                    Item = dbContext.Items.FirstOrDefault(i => i.Number == Order.OwnerKey);
+                }
+
+
+                //int orderID = Convert.ToInt32((string)obj);
+
+
+            }
+
+        }
+        public ICommand ProdOrderChosenCommand
+        {
+            get
+            {
+                if (_ProdOrderChosenCommand == null)
+                {
+                    _ProdOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
+                }
+                return _ProdOrderChosenCommand;
+            }
+        }
 
         public ICommand ComboBoxLoader { get; set; }
 
@@ -326,23 +340,6 @@ namespace Production_Facility.ViewModels
             }
                 
         }
-        public OrderViewModel()
-        {
-            ComboBoxLoader = new RelayCommand(SetComboBox);
-            OrdersParamsLoader = new RelayCommand(SetOrdersParams);
-            SaveOrderCommand = new RelayCommand(SaveOrder);
-            //ProduceOrderCommand = new RelayCommand(ProduceOrder);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-            }
-        }
 
         private List<Item> userChoice = new List<Item>();
         public List<Item> UserChoice
@@ -355,14 +352,25 @@ namespace Production_Facility.ViewModels
             }
         }
 
-        private ObservableCollection<RecipeComponent> orders;
-        public ObservableCollection<RecipeComponent> Orders
+        private ObservableCollection<OrderComponent> components;
+        public ObservableCollection<OrderComponent> Components
         {
-            get { return orders; }
+            get { return components; }
             set
             {
-                orders = value;
-                OnPropertyChanged("Orders");
+                components = value;
+                OnPropertyChanged("Components");
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propName));
             }
         }
     }

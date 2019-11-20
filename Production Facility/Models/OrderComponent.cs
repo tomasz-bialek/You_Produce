@@ -48,6 +48,16 @@ namespace Production_Facility.Models
             this.Quantity = quantity;
         }
 
+        public OrderComponent(byte line, string ownerKey, string ownerName, string ComponentKey, string ComponentName, double quantity)
+        {
+            this.Line = line;
+            this.OwnerKey = ownerKey;
+            this.OwnerName = ownerName;
+            this.ComponentKey = ComponentKey;
+            this.ComponentName = ComponentName;
+            this.Quantity = quantity;
+        }
+
         public OrderComponent()
         {
 

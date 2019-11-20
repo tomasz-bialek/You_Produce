@@ -18,9 +18,9 @@ namespace Production_Facility.Views
     /// <summary>
     /// Interaction logic for ProductionOrderView.xaml
     /// </summary>
-    public partial class ProductionOrderView : UserControl
+    public partial class OrderView : UserControl
     {
-        public ProductionOrderView()
+        public OrderView()
         {
             InitializeComponent();
         }

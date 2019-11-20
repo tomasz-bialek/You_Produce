@@ -141,8 +141,8 @@
     <Compile Include="Views\ItemView.xaml.cs">
       <DependentUpon>ItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProductionOrderView.xaml.cs">
-      <DependentUpon>ProductionOrderView.xaml</DependentUpon>
+    <Compile Include="Views\OrderView.xaml.cs">
+      <DependentUpon>OrderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RecipeView.xaml.cs">
       <DependentUpon>RecipeView.xaml</DependentUpon>
@@ -167,7 +167,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProductionOrderView.xaml">
+    <Page Include="Views\OrderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
