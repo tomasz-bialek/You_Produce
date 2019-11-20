@@ -18,6 +18,8 @@ namespace Production_Facility.Models
 
         public string RecipeComposition { get; set; }
 
+        public bool IsIntermediate { get; set; }
+
         public List<RecipeLine> ItemRecipe = new List<RecipeLine>();
 
 
@@ -25,6 +27,9 @@ namespace Production_Facility.Models
         {
             this.RecipeOwner = owner;
             this.RecipeComposition = composition;
+
+            if (RecipeOwner.Length == 13)
+                this.IsIntermediate = true;
         }
         public Recipe(string owner)
         {

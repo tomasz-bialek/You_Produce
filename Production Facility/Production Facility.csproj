@@ -94,7 +94,28 @@
     <Compile Include="Migrations\201911181130048_PlannedDate.Designer.cs">
       <DependentUpon>201911181130048_PlannedDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911201111253_Recipe_IsIntermediate.cs" />
+    <Compile Include="Migrations\201911201111253_Recipe_IsIntermediate.Designer.cs">
+      <DependentUpon>201911201111253_Recipe_IsIntermediate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201413336_Component.cs" />
+    <Compile Include="Migrations\201911201413336_Component.Designer.cs">
+      <DependentUpon>201911201413336_Component.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201418356_Components.cs" />
+    <Compile Include="Migrations\201911201418356_Components.Designer.cs">
+      <DependentUpon>201911201418356_Components.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201445575_Components2.cs" />
+    <Compile Include="Migrations\201911201445575_Components2.Designer.cs">
+      <DependentUpon>201911201445575_Components2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201452001_Components3.cs" />
+    <Compile Include="Migrations\201911201452001_Components3.Designer.cs">
+      <DependentUpon>201911201452001_Components3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ProductionOrder.cs" />
     <Compile Include="ViewModels\Commands\LoadOrderCommand.cs" />
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
@@ -173,6 +194,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911181130048_PlannedDate.resx">
       <DependentUpon>201911181130048_PlannedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201111253_Recipe_IsIntermediate.resx">
+      <DependentUpon>201911201111253_Recipe_IsIntermediate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201413336_Component.resx">
+      <DependentUpon>201911201413336_Component.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201418356_Components.resx">
+      <DependentUpon>201911201418356_Components.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201445575_Components2.resx">
+      <DependentUpon>201911201445575_Components2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201452001_Components3.resx">
+      <DependentUpon>201911201452001_Components3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

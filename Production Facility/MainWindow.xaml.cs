@@ -23,10 +23,29 @@ namespace Production_Facility
     /// </summary>
     public partial class MainWindow : Window
     {
+        
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new ViewModelNavigator();
+
+            using (FacilityDBContext context = new FacilityDBContext())
+            {
+                foreach (Recipe r in context.Recipes)
+                {
+                    foreach(var line in r.GetRecipe(r.RecipeComposition))
+                    {
+                        var item = context.Items.SingleOrDefault(i => i.Number == r.RecipeOwner);
+
+                        var com = new Component((byte)line.RecipeLine_Nr,r.RecipeOwner,item.Name,r.RecipeID,line.RecipeLine_Key,line.RecipeLine_Name,line.RecipeLine_Amount);
+                        context.Components.Add(com);
+                    }
+                }
+
+                context.SaveChanges();
+            }
+
 
         }
     }

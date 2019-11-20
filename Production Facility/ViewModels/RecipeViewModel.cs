@@ -26,6 +26,20 @@ namespace Production_Facility.ViewModels
             }
         }
 
+        private Recipe recipe;
+        public Recipe Recipe
+        {
+            get { return recipe; }
+            set
+            {
+                recipe = value;
+                OnPropertyChanged("Recipe");
+            }
+        }
+
+
+
+
         public RecipeViewModel()
         {
             
@@ -60,15 +74,15 @@ namespace Production_Facility.ViewModels
             {
                 string s = obj as string;
 
-                var recipe = (from xx in dbContext.Recipes
+                Recipe = (from xx in dbContext.Recipes
                               where xx.RecipeOwner == s
                               select xx).FirstOrDefault<Recipe>();
 
-                if (recipe != null)
+                if (Recipe != null)
                 {
                     lista.Clear();
 
-                    string[] temp = recipe.RecipeComposition.Split('|');
+                    string[] temp = Recipe.RecipeComposition.Split('|');
 
                     foreach (string str in temp)
                     {
