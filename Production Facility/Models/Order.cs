@@ -9,38 +9,38 @@ using System.Threading.Tasks;
 
 namespace Production_Facility.Models
 {
-    [Table("ProductionOrders")]
-    public class ProductionOrder
+    [Table("Orders")]
+    public class Order
     {
         [Key]
         public int OrderID { get; set; }
 
-        public string ItemKey { get; set; }
+        public string OwnerKey { get; set; }
 
         public int Quantity { get; set; }
 
-        public Nullable <DateTime> OrderDate { get; set; }
+        public Nullable <DateTime> EntryDate { get; set; }
 
         public DateTime PlannedDate { get; set; }
 
-        public Nullable <DateTime> ProductionDate { get; set; }
+        public Nullable <DateTime> ClosingDate { get; set; }
 
         public string OrderStatus { get; set; }
 
-        public string OrderComposition { get; set; }
+        public virtual ICollection<OrderComponent> OrderComponents { get; set; }
 
         //public ObservableCollection<Recipe.RecipeLine> Order { get; set; }
 
-        public ProductionOrder(string key, int quantity, DateTime plannedDate, string orderComposition)
+        public Order(string key, int quantity, DateTime plannedDate)
         {
-            this.ItemKey = key;
+            this.OwnerKey = key;
             this.Quantity = quantity;
             this.PlannedDate = plannedDate;
             this.OrderStatus = "PLANNED";
-            this.OrderDate = DateTime.Now;
-            this.OrderComposition = orderComposition;
+            this.EntryDate = DateTime.Now;
+            //this.OrderComposition = orderComposition;
         }
-        public ProductionOrder()
+        public Order()
         {
 
         }

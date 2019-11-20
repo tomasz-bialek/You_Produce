@@ -12,8 +12,10 @@ namespace Production_Facility
         public DbSet<Item> Items { get; set; }
         public DbSet<StockItem> StockItems { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<Component> Components { get; set; }
-        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<RecipeComponent> RecipeComponents { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderComponent> OrderComponents { get; set; }
 
 
 

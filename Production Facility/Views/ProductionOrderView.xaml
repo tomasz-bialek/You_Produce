@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" >
     <UserControl.DataContext>
-        <vm:ProductionOrderViewModel/>
+        <vm:OrderViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <converters:MultiBidingConverter x:Key="multiBidingConverter" />
@@ -39,7 +39,7 @@
                             <TextBlock HorizontalAlignment="Center" Grid.Column="1" Text="{Binding PlannedDate,StringFormat={}{0:yyyy-MM-dd}}"/>
                             <TextBlock HorizontalAlignment="Center" Grid.Column="2" Text="{Binding OrderStatus}"/>
                             <TextBlock HorizontalAlignment="Center" Grid.Column="3" Text="{Binding Quantity}"/>
-                            <TextBlock HorizontalAlignment="Left" Grid.Column="4" Text="{Binding ItemKey}"/>
+                            <TextBlock HorizontalAlignment="Left" Grid.Column="4" Text="{Binding OwnerKey}"/>
 
                         </Grid>
                     </DataTemplate>
@@ -54,7 +54,7 @@
             
             <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <GroupBox Header="Item Key" Width="250">
-                    <ComboBox Name="comboBox" MinWidth="240" Text="{Binding ProductionOrder.ItemKey}" Height="23" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left" ItemsSource="{Binding UserChoice}" TextSearch.TextPath="Number">
+                    <ComboBox Name="comboBox" MinWidth="240" Text="{Binding Order.OwnerKey}" Height="23" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left" ItemsSource="{Binding UserChoice}" TextSearch.TextPath="Number">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Name="comboBox_stackPanel">
@@ -134,7 +134,7 @@
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding Order}" Grid.Row="3"/>
+            <DataGrid ItemsSource="{Binding Orders}" Grid.Row="3"/>
         </Grid>
     </Border>
 </UserControl>

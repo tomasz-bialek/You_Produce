@@ -19,7 +19,7 @@
         <DataTemplate x:Name="recipe" DataType="{x:Type viewmodels:RecipeViewModel}">
             <views:RecipeView/>
         </DataTemplate>
-        <DataTemplate x:Name="prodOrder" DataType="{x:Type viewmodels:ProductionOrderViewModel}">
+        <DataTemplate x:Name="prodOrder" DataType="{x:Type viewmodels:OrderViewModel}">
             <views:ProductionOrderView/>
         </DataTemplate>
     </Window.Resources>

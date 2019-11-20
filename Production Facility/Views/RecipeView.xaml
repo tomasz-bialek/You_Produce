@@ -56,7 +56,7 @@
                 <TextBlock Text="{Binding Path=Items.Count, ElementName=comboBox}" FontSize="20" Foreground="Black" VerticalAlignment="Center" Margin="10"/>
                 <CheckBox  IsChecked="{Binding Recipe.IsIntermediate}" IsEnabled="False" Content="is Intermediate" VerticalAlignment="Center" Margin="20" FontSize="12" />
             </DockPanel>
-            <DataGrid Grid.Row="2" ItemsSource="{Binding ItemRecipe}" Margin="10" AlternatingRowBackground="LightGray" />
+            <DataGrid Grid.Row="2" ItemsSource="{Binding RecipeComponents}" Margin="10" AlternatingRowBackground="LightGray" />
         </Grid>
     </Border>
 

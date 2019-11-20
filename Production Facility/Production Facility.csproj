@@ -114,15 +114,27 @@
     <Compile Include="Migrations\201911201452001_Components3.Designer.cs">
       <DependentUpon>201911201452001_Components3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911201536229_RecipeModify.cs" />
+    <Compile Include="Migrations\201911201536229_RecipeModify.Designer.cs">
+      <DependentUpon>201911201536229_RecipeModify.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201603062_RecipeUpdate.cs" />
+    <Compile Include="Migrations\201911201603062_RecipeUpdate.Designer.cs">
+      <DependentUpon>201911201603062_RecipeUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201818279_OrdersModify.cs" />
+    <Compile Include="Migrations\201911201818279_OrdersModify.Designer.cs">
+      <DependentUpon>201911201818279_OrdersModify.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Component.cs" />
-    <Compile Include="Models\ProductionOrder.cs" />
-    <Compile Include="ViewModels\Commands\LoadOrderCommand.cs" />
+    <Compile Include="Models\OrderComponent.cs" />
+    <Compile Include="Models\RecipeComponent.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
     <Compile Include="ViewModels\Commands\SaveOrderCommand.cs" />
     <Compile Include="ViewModels\Converters\MultiBidingConverter.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
-    <Compile Include="ViewModels\ProductionOrderViewModel.cs" />
+    <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\RecipeViewModel.cs" />
     <Compile Include="ViewModels\StockItemViewModel.cs" />
     <Compile Include="ViewModels\ViewModelNavigator.cs" />
@@ -209,6 +221,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911201452001_Components3.resx">
       <DependentUpon>201911201452001_Components3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201536229_RecipeModify.resx">
+      <DependentUpon>201911201536229_RecipeModify.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201603062_RecipeUpdate.resx">
+      <DependentUpon>201911201603062_RecipeUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201818279_OrdersModify.resx">
+      <DependentUpon>201911201818279_OrdersModify.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

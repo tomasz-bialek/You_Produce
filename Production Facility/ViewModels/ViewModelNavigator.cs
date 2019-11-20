@@ -38,7 +38,7 @@ namespace Production_Facility.ViewModels
 
         private void SetProductionOrderVM(object obj)
         {
-            SelectedViewModel = new ProductionOrderViewModel();
+            SelectedViewModel = new OrderViewModel();
         }
 
         public void SetStockItemVM(object obj)

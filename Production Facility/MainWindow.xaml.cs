@@ -30,21 +30,16 @@ namespace Production_Facility
             InitializeComponent();
             DataContext = new ViewModelNavigator();
 
-            using (FacilityDBContext context = new FacilityDBContext())
-            {
-                foreach (Recipe r in context.Recipes)
-                {
-                    foreach(var line in r.GetRecipe(r.RecipeComposition))
-                    {
-                        var item = context.Items.SingleOrDefault(i => i.Number == r.RecipeOwner);
+            //using (FacilityDBContext context = new FacilityDBContext())
+            //{
+            //    foreach (Recipe r in context.Recipes)
+            //    {
+            //        if (r.RecipeOwner.Length == 13)
+            //            r.IsIntermediate = true;
+            //    }
 
-                        var com = new Component((byte)line.RecipeLine_Nr,r.RecipeOwner,item.Name,r.RecipeID,line.RecipeLine_Key,line.RecipeLine_Name,line.RecipeLine_Amount);
-                        context.Components.Add(com);
-                    }
-                }
-
-                context.SaveChanges();
-            }
+            //    context.SaveChanges();
+            //}
 
 
         }

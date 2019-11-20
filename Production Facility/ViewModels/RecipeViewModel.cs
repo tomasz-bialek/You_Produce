@@ -12,9 +12,15 @@ namespace Production_Facility.ViewModels
 {
     public class RecipeViewModel : INotifyPropertyChanged
     {
-        
+        public RecipeViewModel()
+        {
 
-        private ObservableCollection<Recipe.RecipeLine> lista = new ObservableCollection<Recipe.RecipeLine>();
+            ComboBoxLoader = new RelayCommand(SetComboBox);
+            DataGridLoader = new RelayCommand(SetRecipe);
+        }
+
+        public ICommand DataGridLoader { get; set; }
+        public ICommand ComboBoxLoader { get; set; }
 
         private string name = "Receptury";
         public string Name
@@ -37,29 +43,13 @@ namespace Production_Facility.ViewModels
             }
         }
 
-
-
-
-        public RecipeViewModel()
-        {
-            
-            ComboBoxLoader = new RelayCommand(SetComboBox);
-            DataGridLoader = new RelayCommand(SetRecipe);
-        }
-        
-
-        public ICommand DataGridLoader { get; set; }
-        public ICommand ComboBoxLoader { get; set; }
-
         public void SetComboBox (object obj)
         {
             using(FacilityDBContext dbContext = new FacilityDBContext())
             {
-                string s = obj as string;
-
-                List<Item> entities = (from q in dbContext.Items
+                var entities = (from q in dbContext.Items
                                        from x in dbContext.Recipes
-                                       where q.Name.Contains(s)
+                                       where q.Name.Contains((string)obj)
                                        where x.RecipeOwner == q.Number
                                        select q).ToList();
 
@@ -72,50 +62,27 @@ namespace Production_Facility.ViewModels
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                string s = obj as string;
+                Recipe = dbContext.Recipes.SingleOrDefault(q => q.RecipeOwner == (string)obj);
 
-                Recipe = (from xx in dbContext.Recipes
-                              where xx.RecipeOwner == s
-                              select xx).FirstOrDefault<Recipe>();
+                var comps = dbContext.RecipeComponents.Where(q => q.OwnerKey == Recipe.RecipeOwner).ToList();
 
-                if (Recipe != null)
-                {
-                    lista.Clear();
-
-                    string[] temp = Recipe.RecipeComposition.Split('|');
-
-                    foreach (string str in temp)
-                    {
-                        string[] cut = str.Split('=');
-                        Recipe.RecipeLine newRecipeLine = new Recipe.RecipeLine(int.Parse(cut[0]), cut[1], cut[2], double.Parse(cut[3]));
-
-                        lista.Add(newRecipeLine);
-                    }
-                    ItemRecipe = lista;
-                }
+                RecipeComponents = new ObservableCollection<RecipeComponent>(comps);
             }
                 
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private ObservableCollection<RecipeComponent> recipeComponents = new ObservableCollection<RecipeComponent>();
 
-        private void OnPropertyChanged(string propName)
+        public ObservableCollection<RecipeComponent> RecipeComponents
         {
-            if (PropertyChanged != null)
+            get
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
+                return recipeComponents;
             }
-        }
-
-        private ObservableCollection<Recipe.RecipeLine> itemRecipe = new ObservableCollection<Recipe.RecipeLine>();
-
-        public ObservableCollection<Recipe.RecipeLine> ItemRecipe
-        {
-            get { return itemRecipe; }
             set
             {
-                itemRecipe = value;
-                OnPropertyChanged("ItemRecipe");
+                recipeComponents = value;
+                OnPropertyChanged("RecipeComponents");
             }
         }
 
@@ -128,6 +95,16 @@ namespace Production_Facility.ViewModels
             {
                 userChoice = value;
                 OnPropertyChanged("UserChoice");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propName));
             }
         }
     }

@@ -16,21 +16,23 @@ namespace Production_Facility.Models
         public int RecipeID { get; set; }
         public string RecipeOwner { get; set; }
 
-        public string RecipeComposition { get; set; }
+        public virtual ICollection<RecipeComponent> RecipeComponents { get; set; }
+
+        //public string RecipeComposition { get; set; }
 
         public bool IsIntermediate { get; set; }
 
         public List<RecipeLine> ItemRecipe = new List<RecipeLine>();
 
 
-        public Recipe(string owner,string composition)
-        {
-            this.RecipeOwner = owner;
-            this.RecipeComposition = composition;
+        //public Recipe(string owner,string composition)
+        //{
+        //    this.RecipeOwner = owner;
+        //    this.RecipeComposition = composition;
 
-            if (RecipeOwner.Length == 13)
-                this.IsIntermediate = true;
-        }
+        //    if (RecipeOwner.Length == 13)
+        //        this.IsIntermediate = true;
+        //}
         public Recipe(string owner)
         {
             this.RecipeOwner = owner;
@@ -42,23 +44,23 @@ namespace Production_Facility.Models
 
         public RecipeLine recipeLine;
 
-        public List<RecipeLine> GetRecipe (FacilityDBContext context, string key)
-        {
-            var list = new List<RecipeLine>();
+        //public List<RecipeLine> GetRecipe (FacilityDBContext context, string key)
+        //{
+        //    var list = new List<RecipeLine>();
 
-            var recipe = (from q in context.Recipes where q.RecipeOwner == key select q).FirstOrDefault<Recipe>();
+        //    var recipe = (from q in context.Recipes where q.RecipeOwner == key select q).FirstOrDefault<Recipe>();
 
-            var line = recipe.RecipeComposition.Split('|');
+        //    var line = recipe.RecipeComposition.Split('|');
 
-            foreach(string pozycja in line)
-            {
-                var cut = pozycja.Split('=');
-                var newRecipeline = new RecipeLine(int.Parse(cut[0]), cut[1], cut[2], double.Parse(cut[3]));
-                list.Add(newRecipeline);
+        //    foreach(string pozycja in line)
+        //    {
+        //        var cut = pozycja.Split('=');
+        //        var newRecipeline = new RecipeLine(int.Parse(cut[0]), cut[1], cut[2], double.Parse(cut[3]));
+        //        list.Add(newRecipeline);
 
-            }
-            return list;
-        }
+        //    }
+        //    return list;
+        //}
 
         public ObservableCollection<RecipeLine> GetRecipe(string recipeComposition)
         {
@@ -76,17 +78,17 @@ namespace Production_Facility.Models
             return list;
         }
 
-        public string GetRecipeComposition(ObservableCollection<Recipe.RecipeLine> recipeLines )
-        {
-            var sb = new StringBuilder();
-            foreach(Recipe.RecipeLine line in recipeLines)
-            {
-                sb.Append(line.RecipeLine_Nr.ToString() + '=' + line.RecipeLine_Key + '=' + line.RecipeLine_Name + '=' + line.RecipeLine_Amount +'|');
-            }
-            sb.Remove(sb.Length - 1, 1);
+        //public string GetRecipeComposition(ObservableCollection<Recipe.RecipeLine> recipeLines )
+        //{
+        //    var sb = new StringBuilder();
+        //    foreach(Recipe.RecipeLine line in recipeLines)
+        //    {
+        //        sb.Append(line.RecipeLine_Nr.ToString() + '=' + line.RecipeLine_Key + '=' + line.RecipeLine_Name + '=' + line.RecipeLine_Amount +'|');
+        //    }
+        //    sb.Remove(sb.Length - 1, 1);
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
 
         public class RecipeLine
         {
