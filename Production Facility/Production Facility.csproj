@@ -149,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Enum.cs" />
-    <Compile Include="Models\FunctionTemp.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Recipe.cs" />
     <Compile Include="Models\StockItem.cs" />

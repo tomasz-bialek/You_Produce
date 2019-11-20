@@ -23,49 +23,10 @@ namespace Production_Facility
     /// </summary>
     public partial class MainWindow : Window
     {
-        SortedDictionary<string, Item> bazaDanych = new SortedDictionary<string, Item>();
-        Dictionary<string, Recipe> bazaReceptur = new Dictionary<string, Recipe>();
-        //List<StockItem> bazaStockItem = new List<StockItem>();
-        //List<StockItem> listaSI = new List<StockItem>();
-        FunctionTemp ft = new FunctionTemp();
-
-        public enum Wylicz { raz, dwa, trzy };
-
-        FacilityDBContext context = new FacilityDBContext();
-
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new ViewModelNavigator();
-
-            //var sr = new StreamReader("C:/Temp/Recipes.csv", Encoding.GetEncoding("UTF-8"));
-
-            //string line;
-            //string[] cut;
-
-            //while ((line = sr.ReadLine()) != null)
-            //{
-            //    cut = line.Split('\t');
-
-            //    var si = new Recipe(cut[0], cut[1]);
-            //    context.Recipes.Add(si);
-            //}
-
-            //sr.Close();
-            //context.SaveChanges();
-
-            //foreach(var si in bazaStockItem)
-            //{
-            //    context.StockItems.Add(si);
-            //}
-            //context.SaveChanges();
-
-            //foreach (StockItem si in context.StockItems.ToList())
-            //{
-            //    si.QAvailable = si.QTotal;
-            //    si.QReserved = 0;
-            //}
-            //context.SaveChanges();
 
         }
     }
