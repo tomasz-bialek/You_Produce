@@ -1,0 +1,138 @@
+﻿<UserControl x:Class="Production_Facility.Views.StockItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Production_Facility.Views"
+             xmlns:vm="clr-namespace:Production_Facility.ViewModels"
+             xmlns:models="clr-namespace:Production_Facility.Models"
+             xmlns:converters="clr-namespace:Production_Facility.ViewModels.Converters"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <vm:StockItemViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="enumSectionType" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:SectionType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="enumUnitType" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:UnitType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <converters:MultiBidingConverter x:Key="multiBidingConverter" />
+    </UserControl.Resources>
+
+    <Border Margin="10" BorderBrush="Black" BorderThickness="3" CornerRadius="10" >
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Margin="10" FontSize="20" Text="{Binding Name}" Foreground="Blue" FontWeight="Bold"/>
+            <WrapPanel Orientation="Horizontal" Grid.Row="1" >
+                <GroupBox Header="Section" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <ComboBox Name="sectionComboBox" ItemsSource="{Binding Source={StaticResource enumSectionType}}" Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Unit" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240" >
+                    <ComboBox Name="unitComboBox" ItemsSource="{Binding Source={StaticResource enumUnitType}}" Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Key" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="keyTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Name" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="nameTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Batch" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="batchTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Quantity Total" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="qTotalTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Quantity Reserved" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="qReservedTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Quantity Available" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="qAvailableTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Unit Cost" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="uCostTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Total Cost" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="tCostTextBox"  Margin="5,2"/>
+                </GroupBox>
+                <GroupBox Header="Incoming Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <Grid Margin="5,2" >
+                        <DatePicker Name="incoming_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
+                        <DatePicker Name="incoming_DatePicker_2" Width="106" HorizontalAlignment="Right" />
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Expiration Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <Grid Margin="5,2" >
+                        <DatePicker Name="expiration_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
+                        <DatePicker Name="expiration_DatePicker_2" Width="106" HorizontalAlignment="Right" />
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Last Action Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <Grid Margin="5,2" >
+                        <DatePicker Name="lastAction_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
+                        <DatePicker Name="lastAction_DatePicker_2" Width="106" HorizontalAlignment="Right" />
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Location" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
+                    <TextBox Name="locationTextBox"  Margin="5,2"/>
+                </GroupBox>
+            </WrapPanel>
+
+            <Button Grid.Row="2"  Content="ODŚWIEŻ" Width="100" HorizontalAlignment="Left" Margin="10" FontWeight="Bold" Command="{Binding DataGridLoader}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource multiBidingConverter}">
+                        <Binding Path="Text" ElementName="sectionComboBox"/>
+                        <Binding Path="Text" ElementName="unitComboBox"/>
+                        <Binding Path="Text" ElementName="keyTextBox"/>
+                        <Binding Path="Text" ElementName="nameTextBox"/>
+                        <Binding Path="Text" ElementName="locationTextBox"/>
+                        <Binding Path="Text" ElementName="batchTextBox"/>
+                        <Binding Path="Text" ElementName="qTotalTextBox"/>
+                        <Binding Path="Text" ElementName="qReservedTextBox"/>
+                        <Binding Path="Text" ElementName="qAvailableTextBox"/>
+                        <Binding Path="Text" ElementName="uCostTextBox"/>
+                        <Binding Path="Text" ElementName="tCostTextBox"/>
+                        <Binding Path="SelectedDate" ElementName="incoming_DatePicker_1"/>
+                        <Binding Path="SelectedDate" ElementName="incoming_DatePicker_2"/>
+                        <Binding Path="SelectedDate" ElementName="expiration_DatePicker_1"/>
+                        <Binding Path="SelectedDate" ElementName="expiration_DatePicker_2"/>
+                        <Binding Path="SelectedDate" ElementName="lastAction_DatePicker_1"/>
+                        <Binding Path="SelectedDate" ElementName="lastAction_DatePicker_2"/>
+
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+            <DataGrid Grid.Row="3" ItemsSource="{Binding StockItems}" Margin="10" AutoGenerateColumns="false"  >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Key" Binding="{Binding Number}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Name" FontWeight="Bold" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Unit" Binding="{Binding Unit}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Section" Binding="{Binding Section}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Unit Cost" Binding="{Binding UnitCost}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Total Cost" Binding="{Binding TotalCost}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Q Total" Binding="{Binding QTotal}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Q Reserved" Binding="{Binding QReserved}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Q Available" Binding="{Binding QAvailable}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Last Use Date" Binding="{Binding LastActionDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Income Date" Binding="{Binding IncomingDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Location" Binding="{Binding Location}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Batch" Binding="{Binding BatchNumber}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+    </Border>
+</UserControl>
