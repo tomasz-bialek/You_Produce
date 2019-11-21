@@ -35,7 +35,7 @@ namespace Production_Facility.Models
         [Required]
         public double Quantity { get; set; }
 
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
 
         public OrderComponent(byte line, string ownerKey, string ownerName, int orderId, string ComponentKey, string ComponentName, double quantity)
         {

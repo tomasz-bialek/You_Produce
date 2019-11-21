@@ -16,7 +16,7 @@
         <converters:MultiBidingConverter x:Key="multiBidingConverter" />
     </UserControl.Resources>
     <Border Margin="10" BorderBrush="Black" BorderThickness="3" CornerRadius="10" Background="LightGray" >
-        <Grid Margin="10">
+        <!--<Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -134,7 +134,138 @@
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding Components, Mode=TwoWay}" Grid.Row="3" CanUserAddRows="True"/>
-        </Grid>
+            <DataGrid ItemsSource="{Binding Components, Mode=TwoWay}" Grid.Row="3" HorizontalContentAlignment="Stretch"  CanUserAddRows="True" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="false" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Line" Binding="{Binding Line}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Key" Binding="{Binding ComponentKey}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Name" FontWeight="Bold"  Binding="{Binding ComponentName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>-->
+        <StackPanel Margin="10">
+            <TextBlock Margin="10" FontSize="20" Text="{Binding Name}" Foreground="Blue" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Name="mainComboBox"   ItemsSource="{Binding Orders}" SelectedItem="{Binding Order}"  IsEnabled="True" Height="20" Width="500" HorizontalAlignment="Left">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="75"/>
+                                    <ColumnDefinition Width="75"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" Grid.Column="0" Text="{Binding OrderID}" />
+                                <TextBlock HorizontalAlignment="Center" Grid.Column="1" Text="{Binding PlannedDate,StringFormat={}{0:yyyy-MM-dd}}"/>
+                                <TextBlock HorizontalAlignment="Center" Grid.Column="2" Text="{Binding OrderStatus}"/>
+                                <TextBlock HorizontalAlignment="Center" Grid.Column="3" Text="{Binding Quantity}"/>
+                                <TextBlock HorizontalAlignment="Left" Grid.Column="4" Text="{Binding OwnerKey}"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="DropDownClosed">
+                            <i:InvokeCommandAction Command="{Binding ProdOrderChosenCommand}" CommandParameter="{Binding ElementName=id_TextBox, Path=Text}"/>
+                        </i:EventTrigger>
+
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <Button Content="REFRESH" Width="60" Margin="10,0,0,0" Command="{Binding RefreshCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <GroupBox Header="Item Key" Width="250">
+                    <ComboBox Name="comboBox" MinWidth="240" Text="{Binding Order.OwnerKey}" Height="23" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left" ItemsSource="{Binding UserChoice}" TextSearch.TextPath="Number">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Name="comboBox_stackPanel">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Key" FontSize="12" FontWeight="Bold" Margin="5"/>
+                                        <TextBlock Text="{Binding Number}" FontSize="12"  Margin="5"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Name" FontSize="12" FontWeight="Bold" Margin="5"/>
+                                        <TextBlock Text="{Binding Name}" FontSize="12"  Margin="5"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.InputBindings>
+                            <KeyBinding 
+                            Key="Enter" 
+                            Command="{Binding ComboBoxLoader}" 
+                            CommandParameter="{Binding Path=Text, ElementName=comboBox}"/>
+                        </ComboBox.InputBindings>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DropDownClosed">
+                                <i:InvokeCommandAction Command="{Binding OrdersParamsLoader}" CommandParameter="{Binding ElementName=comboBox, Path=Text}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                </GroupBox>
+                <GroupBox Header="Quantity" Width="70">
+                    <TextBox Name="quantityTextBox" Text="{Binding Order.Quantity}" />
+                </GroupBox>
+                <GroupBox Header="Planned Date" Width="100">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Order.PlannedDate,StringFormat={}{0:yyyy-MM-dd}}"/>
+                        <DatePicker Name="planned_DatePicker" Width="30" SelectedDate="{Binding Order.PlannedDate}"/>
+                    </StackPanel>
+                </GroupBox>
+                <Button Width="100" HorizontalAlignment="Left" Height="20" Content="LOAD ORDER" Margin="10" Command="{Binding LoadOrderCommand}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource multiBidingConverter}">
+                            <Binding Path="Text" ElementName="comboBox"/>
+                            <Binding Path="Text" ElementName="quantityTextBox"/>
+                            <Binding Path="Text" ElementName="id_TextBox"/>
+
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+                <Button Width="100" HorizontalAlignment="Left" Height="20" Content="SAVE ORDER" Command="{Binding SaveOrderCommand}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource multiBidingConverter}">
+                            <Binding Path="Text" ElementName="comboBox"/>
+                            <Binding Path="Text" ElementName="quantityTextBox"/>
+                            <Binding Path="SelectedDate" ElementName="planned_DatePicker"/>
+                            <Binding Path="Text" ElementName="id_TextBox"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <GroupBox Header="Item Name" Width="250" IsEnabled="false">
+                    <TextBox Name="itemName" Text="{Binding Item.Name}" />
+                </GroupBox>
+                <GroupBox Header="Unit" Width="70" IsEnabled="False">
+                    <TextBox Name="unit_TextBox" Text="{Binding Item.Unit}" Width="Auto" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"   />
+                </GroupBox>
+                <GroupBox Header="Order ID" Width="100" IsEnabled="False">
+                    <TextBox Name="id_TextBox" Text="{Binding Order.OrderID}" Width="Auto" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+                </GroupBox>
+                <Button Width="100" HorizontalAlignment="Left" Height="20" Content="PRODUCE" FontWeight="Bold" Margin="10" Command="{Binding ProduceOrderCommand}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource multiBidingConverter}">
+                            <Binding Path="Text" ElementName="comboBox"/>
+                            <Binding Path="Text" ElementName="itemName"/>
+                            <Binding Path="Text" ElementName="quantityTextBox"/>
+                            <Binding Path="Text" ElementName="unit_TextBox"/>
+                            <Binding Path="Text" ElementName="id_TextBox"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+            </StackPanel>
+            <DataGrid ItemsSource="{Binding Components, Mode=TwoWay}" Margin="0,10,0,10" CanUserAddRows="True" Width="Auto" AutoGenerateColumns="false" HorizontalAlignment="Stretch"> 
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Line" Binding="{Binding Line}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Key" Binding="{Binding ComponentKey}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Name" FontWeight="Bold"  Binding="{Binding ComponentName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </StackPanel>
     </Border>
 </UserControl>

@@ -116,10 +116,7 @@
             </Button>
             <DataGrid Grid.Row="3" ItemsSource="{Binding StockItems}" Margin="10" AutoGenerateColumns="false"  >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Key" Binding="{Binding Number}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Name" FontWeight="Bold" Binding="{Binding Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Unit" Binding="{Binding Unit}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Section" Binding="{Binding Section}"></DataGridTextColumn>
+                    
                     <DataGridTextColumn Header="Unit Cost" Binding="{Binding UnitCost}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Total Cost" Binding="{Binding TotalCost}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Q Total" Binding="{Binding QTotal}"></DataGridTextColumn>

@@ -14,17 +14,7 @@ namespace Production_Facility.ViewModels
 {
     public class OrderViewModel : INotifyPropertyChanged
     {
-        public OrderViewModel()
-        {
-            ComboBoxLoader = new RelayCommand(SetComboBox);
-            OrdersParamsLoader = new RelayCommand(SetOrdersParams);
-            SaveOrderCommand = new RelayCommand(SaveOrder);
-            //ProduceOrderCommand = new RelayCommand(ProduceOrder);
-        }
 
-
-        //Recipe recipe = new Recipe();
-        //RecipeViewModel recipeVM = new RecipeViewModel();
 
         private Order order;
 
@@ -55,6 +45,7 @@ namespace Production_Facility.ViewModels
             set
             {
                 orders = value;
+                OnPropertyChanged("Orders");
             }
         }
         
@@ -71,8 +62,7 @@ namespace Production_Facility.ViewModels
         }
 
         private string name = "Zlecenie Produkcyjne";
-        private ICommand _LoadOrderCommand;
-        private ICommand _ProdOrderChosenCommand;
+        
 
         public string Name
         {
@@ -87,9 +77,9 @@ namespace Production_Facility.ViewModels
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                string s = obj as string;
+                var s = (string)obj;
 
-                List<Item> entities = (from q in dbContext.Items
+                var entities = (from q in dbContext.Items
                                        from x in dbContext.Recipes
                                        where q.Name.Contains(s)
                                        where x.RecipeOwner == q.Number
@@ -160,8 +150,6 @@ namespace Production_Facility.ViewModels
 
                 if (Int32.TryParse((string)cutObj[3], out int orderID))
                 {
-                    //orderID = Convert.ToInt32(cutObj[3]);
-
                     var order = dbContext.Orders.Where(xx => xx.OrderID == orderID).SingleOrDefault<Order>();
 
                     order.Quantity = Order.Quantity;
@@ -237,71 +225,72 @@ namespace Production_Facility.ViewModels
                     }
                     dbContext.SaveChanges();
 
+                    Order = x;
+
                 }
                 
             }
 
         }
 
-        //public void ProduceOrder(object parameter)
-        //{
-        //    using (FacilityDBContext dbContext = new FacilityDBContext())
-        //    {
-        //        var obj = (object[])parameter;
+        public void ProduceOrder(object obj)
+        {
+            using (FacilityDBContext dbContext = new FacilityDBContext())
+            {
+                var cutObj = (object[])obj;
 
-        //        var key = (string)obj[0];
-        //        var name = (string)obj[1];
-        //        var quantityTemp = (string)obj[2];
-        //        var quantity = Convert.ToDecimal(quantityTemp);
-        //        var unit = (string)obj[3];
-        //        var orderiD = (string)obj[4];
+                var key = (string)cutObj[0];
+                var name = (string)cutObj[1];
+                var quantity = Convert.ToDecimal((string)cutObj[2]);
+                var unit = (string)cutObj[3];
+                var orderID = (string)cutObj[4];
 
-        //        var item = dbContext.Items.SingleOrDefault(i => i.Number == key);
+                var item = dbContext.Items.SingleOrDefault(i => i.Number == key);
 
-        //        var tCost = new decimal();
+                var tCost = new decimal();
 
-        //        var isAllStockItemsAvailable = true;
+                var isAllStockItemsAvailable = true;
 
-        //        foreach (RecipeComponent line in Order)
-        //        {
-        //            var qAvailable = Convert.ToDecimal(line.RecipeLine_Amount);
-        //            var xxx = dbContext.StockItems.Where(xx => xx.Number == line.RecipeLine_Key).OrderBy(xx => xx.ExpirationDate).FirstOrDefault<StockItem>();
+                foreach (OrderComponent line in Components)
+                {
+                    var qAvailable = Convert.ToDecimal(line.Quantity);
+                    var xxx = dbContext.StockItems.Where(q => q.Number == line.ComponentKey).OrderBy(xx => xx.ExpirationDate).FirstOrDefault<StockItem>();
 
-        //            if (xxx == null)
-        //            {
-        //                isAllStockItemsAvailable = false;
-        //                MessageBox.Show(String.Format("Brak w bazie pozycji | {0} |\n| {1} | \nPRODUKCJA WSTRZYMANA", line.RecipeLine_Key, line.RecipeLine_Name));
-        //            }
-        //        }
+                    if (xxx == null)
+                    {
+                        isAllStockItemsAvailable = false;
+                        MessageBox.Show(String.Format("Brak w bazie pozycji | {0} |\n| {1} | \nPRODUKCJA WSTRZYMANA", line.ComponentKey, line.ComponentName));
+                    }
+                }
 
-        //        if (isAllStockItemsAvailable)
-        //        {
-        //            foreach (Recipe.RecipeLine line in Order)
-        //            {
-        //                var qAvailable = Convert.ToDecimal(line.RecipeLine_Amount);
-        //                var xxx = dbContext.StockItems.Where(xx => xx.Number == line.RecipeLine_Key).OrderBy(xx => xx.ExpirationDate).FirstOrDefault<StockItem>();
+                if (isAllStockItemsAvailable)
+                {
+                    foreach (OrderComponent line in Components)
+                    {
+                        var qAvailable = Convert.ToDecimal(line.Quantity);
+                        var xxx = dbContext.StockItems.Where(xx => xx.Number == line.ComponentKey).OrderBy(xx => xx.ExpirationDate).FirstOrDefault<StockItem>();
 
-        //                xxx.QTotal = xxx.QTotal - line.RecipeLine_Amount;
-        //                xxx.QAvailable = xxx.QTotal;
-        //                xxx.LastActionDate = DateTime.Now;
-        //                tCost += xxx.UnitCost * Convert.ToDecimal(line.RecipeLine_Amount);
-        //                dbContext.SaveChanges();
-        //            }
-        //            var uCost = tCost / quantity;
-        //            var orderID_temp = Convert.ToInt32(orderiD);
-        //            var prOrder = dbContext.ProductionOrders.Where(q => q.OrderID == orderID_temp).FirstOrDefault<ProductionOrder>();
-        //            prOrder.OrderStatus = "COMPLETED";
-        //            prOrder.ProductionDate = DateTime.Now;
-        //            var newStockItem = new StockItem(key,item.Name, quantity.ToString(), "WR-PR-WG", uCost.ToString(), DateTime.Now.ToString(), DateTime.Now.ToString(), DateTime.Now.AddYears(2).ToString(), item.Unit.ToString(),item.Section.ToString());
-        //            dbContext.StockItems.Add(newStockItem);
-        //            dbContext.SaveChanges();
-        //            MessageBox.Show(String.Format("WYPRODUKOWANO : \n\n | {0} | \n\n | {1} | \n\n w ilości | {2} {3} |)", newStockItem.Number, newStockItem.QTotal, newStockItem.QTotal,newStockItem.Unit));
-        //        }
+                        xxx.QTotal = xxx.QTotal - line.Quantity;
+                        xxx.QAvailable = xxx.QTotal;
+                        xxx.LastActionDate = DateTime.Now;
+                        tCost += xxx.UnitCost * Convert.ToDecimal(line.Quantity);
+                        dbContext.SaveChanges();
+                    }
+                    var uCost = tCost / quantity;
+                    var temp_orderID = Convert.ToInt32(orderID);
+                    var prOrder = dbContext.Orders.FirstOrDefault(q => q.OrderID == temp_orderID);
+                    prOrder.OrderStatus = "CLOSED";
+                    prOrder.ClosingDate = DateTime.Now;
+                    var newStockItem = new StockItem(key, item.Name, quantity.ToString(), "WR-PR-WG", uCost.ToString(), DateTime.Now.ToString(), DateTime.Now.ToString(), DateTime.Now.AddYears(2).ToString(), item.Unit.ToString(), item.Section.ToString(),orderID);
+                    dbContext.StockItems.Add(newStockItem);
+                    dbContext.SaveChanges();
+                    MessageBox.Show(String.Format("WYPRODUKOWANO : \n\n | {0} | \n\n | {1} | \n\n w ilości | {2} {3} |)", newStockItem.Number,newStockItem.Name, newStockItem.QTotal, newStockItem.Unit));
+                }
 
 
-        //    }
+            }
 
-        //}
+        }
         public void ProdOrderChosen(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
@@ -331,6 +320,9 @@ namespace Production_Facility.ViewModels
             }
 
         }
+
+
+        private ICommand _ProdOrderChosenCommand;
         public ICommand ProdOrderChosenCommand
         {
             get
@@ -343,10 +335,20 @@ namespace Production_Facility.ViewModels
             }
         }
 
-        public ICommand ComboBoxLoader { get; set; }
+        private ICommand _RefreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                if (_RefreshCommand == null)
+                {
+                    _RefreshCommand = new RelayCommand(RefreshComboBox);
+                }
+                return _RefreshCommand;
+            }
+        }
 
-        public ICommand OrdersParamsLoader { get; set; }
-
+        private ICommand _LoadOrderCommand;
         public ICommand LoadOrderCommand
         {
             get
@@ -358,26 +360,84 @@ namespace Production_Facility.ViewModels
                 return _LoadOrderCommand;
             }
         }
-        public ICommand SaveOrderCommand { get; set; }
-        
 
-        public ICommand ProduceOrderCommand { get; set; }
-
-        private bool Can_ProdOrderChosen_Execute(object parameter)
+        private ICommand _ComboBoxLoader;
+        public ICommand ComboBoxLoader
         {
-            if (Int32.TryParse((string)parameter, out int orderID))
-                return true;
-            return false;
-            //if(Order!=null)
-            //    return true;
-            //return false;
+            get
+            {
+                if (_ComboBoxLoader == null)
+                {
+                    _ComboBoxLoader = new RelayCommand(SetComboBox);
+                }
+                return _ComboBoxLoader;
+            }
         }
 
-        private bool Can_SetDataGrid_Execute(object parameter)
+        private ICommand _OrdersParamsLoader;
+        public ICommand OrdersParamsLoader
+        {
+            get
+            {
+                if (_OrdersParamsLoader == null)
+                {
+                    _OrdersParamsLoader = new RelayCommand(SetOrdersParams);
+                }
+                return _OrdersParamsLoader;
+            }
+        }
+
+        private ICommand _SaveOrderCommand;
+        public ICommand SaveOrderCommand
+        {
+            get
+            {
+                if (_SaveOrderCommand == null)
+                {
+                    _SaveOrderCommand = new RelayCommand(SaveOrder);
+                }
+                return _SaveOrderCommand;
+            }
+        }
+
+
+
+        private ICommand _ProduceOrderCommand;
+        public ICommand ProduceOrderCommand
+        {
+            get
+            {
+                if (_ProduceOrderCommand == null)
+                {
+                    _ProduceOrderCommand = new RelayCommand(ProduceOrder);
+                }
+                return _ProduceOrderCommand;
+            }
+        }
+
+
+
+        private void RefreshComboBox(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                var view = (object[])parameter;
+                Orders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+            }
+        }
+
+        private bool Can_ProdOrderChosen_Execute(object obj)
+        {
+            if (Int32.TryParse((string)obj, out int orderID))
+                return true;
+            return false;
+
+        }
+
+        private bool Can_SetDataGrid_Execute(object obj)
+        {
+            using (FacilityDBContext dbContext = new FacilityDBContext())
+            {
+                var view = (object[])obj;
                 if (view == null || view[0] == null || view[1] == null)
                     return false;
 

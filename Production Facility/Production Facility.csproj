@@ -126,6 +126,10 @@
     <Compile Include="Migrations\201911201818279_OrdersModify.Designer.cs">
       <DependentUpon>201911201818279_OrdersModify.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911211350357_VirtualOrder.cs" />
+    <Compile Include="Migrations\201911211350357_VirtualOrder.Designer.cs">
+      <DependentUpon>201911211350357_VirtualOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\OrderComponent.cs" />
     <Compile Include="Models\RecipeComponent.cs" />
@@ -230,6 +234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911201818279_OrdersModify.resx">
       <DependentUpon>201911201818279_OrdersModify.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211350357_VirtualOrder.resx">
+      <DependentUpon>201911211350357_VirtualOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

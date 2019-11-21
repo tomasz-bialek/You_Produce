@@ -51,7 +51,7 @@ namespace Production_Facility.Models
         //}
 
         public StockItem(string number, string name, string qTotal, string location, string uCost,
-            string laDate, string inDate, string exDate, string unit,string section)
+            string laDate, string inDate, string exDate, string unit,string section,string batch)
         {
             this.Number = number;
             this.Name = name;
@@ -112,8 +112,9 @@ namespace Production_Facility.Models
                 this.Section = SectionType.Substance;
             else if (section == "Product")
                 this.Section = SectionType.Product;
-            //var batch_temp = String.Concat(Enumerable.Repeat("0", 6 - batch.Length));
-            //this.BatchNumber = "PO/" + batch_temp + batch;
+
+            var batch_temp = String.Concat(Enumerable.Repeat("0", 6 - batch.Length));
+            this.BatchNumber = "PO/" + batch_temp + batch;
 
 
         }
