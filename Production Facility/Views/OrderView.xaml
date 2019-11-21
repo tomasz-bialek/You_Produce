@@ -24,7 +24,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Margin="10" FontSize="20" Text="{Binding Name}" Foreground="Blue" FontWeight="Bold"/>
-            <ComboBox Name="mainComboBox"   ItemsSource="{Binding Orders}" SelectedItem="{Binding Order}"  IsEnabled="True" >
+            <ComboBox Grid.Row="0" Name="mainComboBox"   ItemsSource="{Binding Orders}" SelectedItem="{Binding Order}"  IsEnabled="True" Height="20" Width="500" HorizontalAlignment="Right">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -134,7 +134,7 @@
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding Components}" Grid.Row="3"/>
+            <DataGrid ItemsSource="{Binding Components, Mode=TwoWay}" Grid.Row="3" CanUserAddRows="True"/>
         </Grid>
     </Border>
 </UserControl>

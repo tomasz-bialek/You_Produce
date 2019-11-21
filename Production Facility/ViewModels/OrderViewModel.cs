@@ -144,24 +144,90 @@ namespace Production_Facility.ViewModels
 
         }
 
-        public void SaveOrder(object parameter)
+        public void SaveOrder(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                var values = (object[])parameter;
+                var cutObj = (object[])obj;
 
                 DateTime date;
 
-                if (values[2].ToString() == "")
+                if (cutObj[2].ToString() == "")
                     date = DateTime.Now;
 
                 else
-                    date = ((DateTime)values[2]);
+                    date = ((DateTime)cutObj[2]);
 
-                if (values[3].ToString() == "")
+                if (Int32.TryParse((string)cutObj[3], out int orderID))
                 {
+                    //orderID = Convert.ToInt32(cutObj[3]);
 
-                    var x = dbContext.Orders.Add(new Order(values[0].ToString(), Convert.ToInt32(values[1]), date));//, recipe.GetRecipeComposition(order)
+                    var order = dbContext.Orders.Where(xx => xx.OrderID == orderID).SingleOrDefault<Order>();
+
+                    order.Quantity = Order.Quantity;
+                    order.PlannedDate = Order.PlannedDate;
+
+                    var components = dbContext.OrderComponents.Where(q => q.OrderId == orderID).ToList();
+
+                    MessageBox.Show("components.Count = " + components.Count.ToString() + '\n' + "Components.Count = " + Components.Count.ToString());
+
+                    if(components.Count == Components.Count)
+                    {
+                        for(int i=0;i<components.Count;i++)
+                        {
+                            components[i].ComponentKey = Components[i].ComponentKey;
+                            components[i].ComponentName = Components[i].ComponentName;
+                            components[i].Line = Components[i].Line;
+                            components[i].OwnerKey = Components[i].OwnerKey;
+                            components[i].OwnerName = Components[i].OwnerName;
+                            components[i].Quantity = Components[i].Quantity;
+                        }
+                        
+                    }
+
+                    else if (components.Count > Components.Count)
+                    {
+                        for (int i = 0; i < Components.Count; i++)
+                        {
+                            components[i].ComponentKey = Components[i].ComponentKey;
+                            components[i].ComponentName = Components[i].ComponentName;
+                            components[i].Line = Components[i].Line;
+                            components[i].OwnerKey = Components[i].OwnerKey;
+                            components[i].OwnerName = Components[i].OwnerName;
+                            components[i].Quantity = Components[i].Quantity;
+                        }
+
+                        for (int i = Components.Count; i < components.Count; i++)
+                        {
+                            dbContext.OrderComponents.Remove(components[i]);
+                        }
+                    }
+
+                    else
+                    {
+                        for (int i = 0; i < components.Count; i++)
+                        {
+                            components[i].ComponentKey = Components[i].ComponentKey;
+                            components[i].ComponentName = Components[i].ComponentName;
+                            components[i].Line = Components[i].Line;
+                            components[i].OwnerKey = Components[i].OwnerKey;
+                            components[i].OwnerName = Components[i].OwnerName;
+                            components[i].Quantity = Components[i].Quantity;
+                        }
+
+                        for (int i = components.Count; i < Components.Count; i++)
+                        {
+                            //components.Add(Components[i]);
+
+                            dbContext.OrderComponents.Add(Components[i]);
+                        }
+                    }
+
+                    dbContext.SaveChanges();
+                }
+                else
+                {
+                    var x = dbContext.Orders.Add(new Order(cutObj[0].ToString(),  Convert.ToInt32(cutObj[1]), date));
 
                     foreach (OrderComponent rc in Components)
                     {
@@ -169,20 +235,10 @@ namespace Production_Facility.ViewModels
 
                         dbContext.OrderComponents.Add(order);
                     }
-
                     dbContext.SaveChanges();
-                }
-                else
-                {
 
-                    var orderID = Convert.ToInt32(values[3]);
-
-                    var order = dbContext.Orders.Where(xx => xx.OrderID == orderID).FirstOrDefault<Order>();
-                    //order.OrderComposition = recipe.GetRecipeComposition(Order);
-                    order.Quantity = Order.Quantity;
-                    order.PlannedDate = Order.PlannedDate;
-                    dbContext.SaveChanges();
                 }
+                
             }
 
         }
