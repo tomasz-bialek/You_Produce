@@ -58,7 +58,7 @@
                             <Run Text=")"></Run>
                         </TextBlock>
                     </GroupBox.Header>
-                    <ComboBox Name="comboBox" MinWidth="240" Text="{Binding Order.OwnerKey}" Height="23" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left" ItemsSource="{Binding UserTyped}" TextSearch.TextPath="Number">
+                    <ComboBox Name="comboBox" MinWidth="240" Text="{Binding Order.OwnerKey}" Height="23" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left" ItemsSource="{Binding ItemsFound}" TextSearch.TextPath="Number">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Name="comboBox_stackPanel">
@@ -95,13 +95,11 @@
                         <DatePicker Name="planned_DatePicker" Width="30" SelectedDate="{Binding Order.PlannedDate}"/>
                     </StackPanel>
                 </GroupBox>
-                <Button Width="100" HorizontalAlignment="Left" Height="20" Content="GENERATE" Margin="10" Command="{Binding GenerateComponentsCommand}">
+                <Button Width="100" HorizontalAlignment="Left" Height="20" Content="GENERATE" Margin="10" Command="{Binding SetComponentsCommand}">
                     <Button.CommandParameter>
                         <MultiBinding Converter="{StaticResource multiBidingConverter}">
                             <Binding Path="Text" ElementName="comboBox"/>
                             <Binding Path="Text" ElementName="quantityTextBox"/>
-                            <Binding Path="Text" ElementName="id_TextBox"/>
-
                         </MultiBinding>
                     </Button.CommandParameter>
                 </Button>

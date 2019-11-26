@@ -30,17 +30,7 @@ namespace Production_Facility
             InitializeComponent();
             DataContext = new ViewModelNavigator();
 
-            //using (FacilityDBContext context = new FacilityDBContext())
-            //{
-            //    foreach (Recipe r in context.Recipes)
-            //    {
-            //        if (r.RecipeOwner.Length == 13)
-            //            r.IsIntermediate = true;
-            //    }
-
-            //    context.SaveChanges();
-            //}
-
+            var dbContext = new FacilityDBContext();
 
         }
     }

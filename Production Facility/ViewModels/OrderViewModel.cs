@@ -26,14 +26,14 @@ namespace Production_Facility.ViewModels
         }
 
 
-        private List<Item> _userTyped = new List<Item>();
-        public List<Item> UserTyped
+        private List<Item> _itemsFound = new List<Item>();
+        public List<Item> ItemsFound
         {
-            get { return _userTyped; }
+            get { return _itemsFound; }
             set
             {
-                _userTyped = value;
-                OnPropertyChanged("UserTyped");
+                _itemsFound = value;
+                OnPropertyChanged("ItemsFound");
             }
         }
 
@@ -82,33 +82,45 @@ namespace Production_Facility.ViewModels
 
 
 
-
-        public void SetComboBox(object obj)
+        /// <summary>
+        /// Find items with existing recipes by a name in a database.
+        /// </summary>
+        /// <param name="obj">Object will be used as a string to find existing items with recipes.</param>
+        public void FindItems(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                var s = (string)obj;
+                var name = (string)obj;
 
                 var entities = (from q in dbContext.Items
                                        from x in dbContext.Recipes
-                                       where q.Name.Contains(s)
+                                       where q.Name.Contains(name)
                                        where x.RecipeOwner == q.Number
                                        select q).ToList();
 
-                UserTyped = entities;
+                ItemsFound = entities;
             }
         }
 
-        public void SetOrdersParams(object obj)
+
+        /// <summary>
+        /// Choose master item from founded results.
+        /// </summary>
+        /// <param name="obj">Object will be used as a string to set proper master item.</param>
+        public void ItemChosen(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
                 Item = dbContext.Items.FirstOrDefault(q => q.Number == (string)obj);
-            }
-                
+            }  
         }
 
-        public void SetDataGrid(object obj)
+
+        /// <summary>
+        /// Generate order components from existed recipe with required quantity.
+        /// </summary>
+        /// <param name="obj">Object will be used as an array[2], then [0] as a string and [1] as an int.</param>
+        public void SetComponents(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
@@ -122,11 +134,11 @@ namespace Production_Facility.ViewModels
                 }
 
 
-                var values = (object[])obj;
+                var objects = (object[])obj;
 
-                var key = (string)values[0];
+                var key = (string)objects[0];
 
-                var quantity_temp = (string)values[1];
+                var quantity_temp = (string)objects[1];
 
                 var quantity = int.Parse(quantity_temp);
 
@@ -144,21 +156,28 @@ namespace Production_Facility.ViewModels
 
         }
 
+
+        /// <summary>
+        /// Save new order to database or save existing order with new parameters.
+        /// </summary>
+        /// <param name="obj">Object will be used as an array[4], [0] as a String (key), [1] as an Int (quantity), [2] as a DateTime, [3] as an Int (orderID - if exist)</param>
         public void SaveOrder(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                var cutObj = (object[])obj;
+                var objects = (object[])obj;
 
                 DateTime date;
-
-                if (cutObj[2].ToString() == "")
+                try
+                {
+                    DateTime.TryParse(objects[2].ToString(), out date);
+                }
+                catch(Exception e)
+                {
                     date = DateTime.Now;
+                }
 
-                else
-                    date = ((DateTime)cutObj[2]);
-
-                if (Int32.TryParse((string)cutObj[3], out int orderID))
+                if (Int32.TryParse((string)objects[3], out int orderID))
                 {
                     var order = dbContext.Orders.Where(xx => xx.OrderID == orderID).SingleOrDefault<Order>();
 
@@ -215,8 +234,6 @@ namespace Production_Facility.ViewModels
 
                         for (int i = components.Count; i < Components.Count; i++)
                         {
-                            //components.Add(Components[i]);
-
                             dbContext.OrderComponents.Add(Components[i]);
                         }
                     }
@@ -225,18 +242,17 @@ namespace Production_Facility.ViewModels
                 }
                 else
                 {
-                    var x = dbContext.Orders.Add(new Order(cutObj[0].ToString(),  Convert.ToInt32(cutObj[1]), date));
+                    var newOrder = dbContext.Orders.Add(new Order(objects[0].ToString(),  Convert.ToInt32(objects[1]), date));
 
-                    foreach (OrderComponent rc in Components)
+                    foreach (OrderComponent oc in Components)
                     {
-                        var order = new OrderComponent(rc.Line, rc.OwnerKey, rc.OwnerName, x.OrderID, rc.ComponentKey, rc.ComponentName, rc.Quantity);
+                        var order = new OrderComponent(oc.Line, oc.OwnerKey, oc.OwnerName, newOrder.OrderID, oc.ComponentKey, oc.ComponentName, oc.Quantity);
 
                         dbContext.OrderComponents.Add(order);
                     }
                     dbContext.SaveChanges();
 
-                    Order = x;
-
+                    Order = newOrder;
                 }
                 
             }
@@ -347,7 +363,7 @@ namespace Production_Facility.ViewModels
 
         }
 
-        private bool Can_SetDataGrid_Execute(object obj)
+        private bool Can_SetComponents_Execute(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
@@ -407,7 +423,7 @@ namespace Production_Facility.ViewModels
             {
                 if (_findItems == null)
                 {
-                    _findItems = new RelayCommand(SetComboBox);
+                    _findItems = new RelayCommand(FindItems);
                 }
                 return _findItems;
             }
@@ -421,23 +437,23 @@ namespace Production_Facility.ViewModels
             {
                 if (_itemChosenCommand == null)
                 {
-                    _itemChosenCommand = new RelayCommand(SetOrdersParams);
+                    _itemChosenCommand = new RelayCommand(ItemChosen);
                 }
                 return _itemChosenCommand;
             }
         }
 
 
-        private ICommand _generateComponentsCommand;
-        public ICommand GenerateComponentsCommand
+        private ICommand _setComponentsCommand;
+        public ICommand SetComponentsCommand
         {
             get
             {
-                if (_generateComponentsCommand == null)
+                if (_setComponentsCommand == null)
                 {
-                    _generateComponentsCommand = new RelayCommand(SetDataGrid, Can_SetDataGrid_Execute);
+                    _setComponentsCommand = new RelayCommand(SetComponents, Can_SetComponents_Execute);
                 }
-                return _generateComponentsCommand;
+                return _setComponentsCommand;
             }
         }
 
