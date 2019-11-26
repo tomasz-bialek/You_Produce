@@ -14,64 +14,74 @@ namespace Production_Facility.ViewModels
 {
     public class OrderViewModel : INotifyPropertyChanged
     {
-
-
-        private Order order;
-
-        public Order Order
-        {
-            get
-            { return order; }
-            set
-            {
-                order = value;
-                OnPropertyChanged("Order");
-            }
-        }
-
-        private List<Order> orders;
-
-        public List<Order> Orders
-        {
-            get
-
-            {
-                using (FacilityDBContext dbContext = new FacilityDBContext())
-                {
-                    return orders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
-                }
-
-            }
-            set
-            {
-                orders = value;
-                OnPropertyChanged("Orders");
-            }
-        }
-        
-
-        private Item item;
+        private Item _item;
         public Item Item
         {
-            get { return item; }
+            get { return _item; }
             set
             {
-                item = value;
+                _item = value;
                 OnPropertyChanged("Item");
             }
         }
 
-        private string name = "Zlecenie Produkcyjne";
-        
 
-        public string Name
+        private List<Item> _userTyped = new List<Item>();
+        public List<Item> UserTyped
         {
-            get { return name; }
+            get { return _userTyped; }
             set
             {
-                name = value;
+                _userTyped = value;
+                OnPropertyChanged("UserTyped");
             }
         }
+
+
+        private Order _order;
+        public Order Order
+        {
+            get
+            { return _order; }
+            set
+            {
+                _order = value;
+                OnPropertyChanged("Order");
+            }
+        }
+
+
+        private List<Order> _existedOrders;
+        public List<Order> ExistedOrders
+        {
+            get
+            {
+                using (FacilityDBContext dbContext = new FacilityDBContext())
+                {
+                    return _existedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                }
+            }
+            set
+            {
+                _existedOrders = value;
+                OnPropertyChanged("ExistedOrders");
+            }
+        }
+
+
+        private ObservableCollection<OrderComponent> _components;
+        public ObservableCollection<OrderComponent> Components
+        {
+            get { return _components; }
+            set
+            {
+                _components = value;
+                OnPropertyChanged("Components");
+            }
+        }
+
+
+
 
         public void SetComboBox(object obj)
         {
@@ -85,7 +95,7 @@ namespace Production_Facility.ViewModels
                                        where x.RecipeOwner == q.Number
                                        select q).ToList();
 
-                UserChoice = entities;
+                UserTyped = entities;
             }
         }
 
@@ -321,107 +331,11 @@ namespace Production_Facility.ViewModels
 
         }
 
-
-        private ICommand _ProdOrderChosenCommand;
-        public ICommand ProdOrderChosenCommand
-        {
-            get
-            {
-                if (_ProdOrderChosenCommand == null)
-                {
-                    _ProdOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
-                }
-                return _ProdOrderChosenCommand;
-            }
-        }
-
-        private ICommand _RefreshCommand;
-        public ICommand RefreshCommand
-        {
-            get
-            {
-                if (_RefreshCommand == null)
-                {
-                    _RefreshCommand = new RelayCommand(RefreshComboBox);
-                }
-                return _RefreshCommand;
-            }
-        }
-
-        private ICommand _LoadOrderCommand;
-        public ICommand LoadOrderCommand
-        {
-            get
-            {
-                if (_LoadOrderCommand == null)
-                {
-                    _LoadOrderCommand = new RelayCommand(SetDataGrid, Can_SetDataGrid_Execute);
-                }
-                return _LoadOrderCommand;
-            }
-        }
-
-        private ICommand _ComboBoxLoader;
-        public ICommand ComboBoxLoader
-        {
-            get
-            {
-                if (_ComboBoxLoader == null)
-                {
-                    _ComboBoxLoader = new RelayCommand(SetComboBox);
-                }
-                return _ComboBoxLoader;
-            }
-        }
-
-        private ICommand _OrdersParamsLoader;
-        public ICommand OrdersParamsLoader
-        {
-            get
-            {
-                if (_OrdersParamsLoader == null)
-                {
-                    _OrdersParamsLoader = new RelayCommand(SetOrdersParams);
-                }
-                return _OrdersParamsLoader;
-            }
-        }
-
-        private ICommand _SaveOrderCommand;
-        public ICommand SaveOrderCommand
-        {
-            get
-            {
-                if (_SaveOrderCommand == null)
-                {
-                    _SaveOrderCommand = new RelayCommand(SaveOrder);
-                }
-                return _SaveOrderCommand;
-            }
-        }
-
-
-
-        private ICommand _ProduceOrderCommand;
-        public ICommand ProduceOrderCommand
-        {
-            get
-            {
-                if (_ProduceOrderCommand == null)
-                {
-                    _ProduceOrderCommand = new RelayCommand(ProduceOrder);
-                }
-                return _ProduceOrderCommand;
-            }
-        }
-
-
-
         private void RefreshComboBox(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                Orders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
             }
         }
 
@@ -454,34 +368,109 @@ namespace Production_Facility.ViewModels
                     return false;
                 }
             }
-                
+
         }
 
-        private List<Item> userChoice = new List<Item>();
-        public List<Item> UserChoice
+
+        private ICommand _existedOrderChosenCommand;
+        public ICommand ExistedOrderChosenCommand
         {
-            get { return userChoice; }
-            set
+            get
             {
-                userChoice = value;
-                OnPropertyChanged("UserChoice");
+                if (_existedOrderChosenCommand == null)
+                {
+                    _existedOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
+                }
+                return _existedOrderChosenCommand;
             }
         }
 
-        private ObservableCollection<OrderComponent> components;
-        public ObservableCollection<OrderComponent> Components
+
+        private ICommand _refreshExistedOrdersCommand;
+        public ICommand RefreshExistedOrdersCommand
         {
-            get { return components; }
-            set
+            get
             {
-                components = value;
-                OnPropertyChanged("Components");
+                if (_refreshExistedOrdersCommand == null)
+                {
+                    _refreshExistedOrdersCommand = new RelayCommand(RefreshComboBox);
+                }
+                return _refreshExistedOrdersCommand;
+            }
+        }
+
+
+        private ICommand _findItems;
+        public ICommand FindItemsCommand
+        {
+            get
+            {
+                if (_findItems == null)
+                {
+                    _findItems = new RelayCommand(SetComboBox);
+                }
+                return _findItems;
+            }
+        }
+
+
+        private ICommand _itemChosenCommand;
+        public ICommand ItemChosenCommand
+        {
+            get
+            {
+                if (_itemChosenCommand == null)
+                {
+                    _itemChosenCommand = new RelayCommand(SetOrdersParams);
+                }
+                return _itemChosenCommand;
+            }
+        }
+
+
+        private ICommand _generateComponentsCommand;
+        public ICommand GenerateComponentsCommand
+        {
+            get
+            {
+                if (_generateComponentsCommand == null)
+                {
+                    _generateComponentsCommand = new RelayCommand(SetDataGrid, Can_SetDataGrid_Execute);
+                }
+                return _generateComponentsCommand;
+            }
+        }
+
+
+        private ICommand _SaveOrderCommand;
+        public ICommand SaveOrderCommand
+        {
+            get
+            {
+                if (_SaveOrderCommand == null)
+                {
+                    _SaveOrderCommand = new RelayCommand(SaveOrder);
+                }
+                return _SaveOrderCommand;
+            }
+        }
+
+
+        private ICommand _ProduceOrderCommand;
+        public ICommand ProduceOrderCommand
+        {
+            get
+            {
+                if (_ProduceOrderCommand == null)
+                {
+                    _ProduceOrderCommand = new RelayCommand(ProduceOrder);
+                }
+                return _ProduceOrderCommand;
             }
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string propName)
         {
             if (PropertyChanged != null)

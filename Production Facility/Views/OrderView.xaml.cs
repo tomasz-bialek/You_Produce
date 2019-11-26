@@ -24,5 +24,11 @@ namespace Production_Facility.Views
         {
             InitializeComponent();
         }
+
+        private void MainComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            comboBox.IsEnabled = false;
+            masterItemHeader.Text = "Master Item";
+        }
     }
 }
