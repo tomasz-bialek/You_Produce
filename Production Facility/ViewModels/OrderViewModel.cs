@@ -254,7 +254,9 @@ namespace Production_Facility.ViewModels
 
                     Order = newOrder;
                 }
-                
+
+                ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+
             }
 
         }
@@ -347,13 +349,13 @@ namespace Production_Facility.ViewModels
 
         }
 
-        private void RefreshComboBox(object obj)
-        {
-            using (FacilityDBContext dbContext = new FacilityDBContext())
-            {
-                ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
-            }
-        }
+        //private void RefreshComboBox(object obj)
+        //{
+        //    using (FacilityDBContext dbContext = new FacilityDBContext())
+        //    {
+        //        ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+        //    }
+        //}
 
         private bool Can_ProdOrderChosen_Execute(object obj)
         {
@@ -402,18 +404,18 @@ namespace Production_Facility.ViewModels
         }
 
 
-        private ICommand _refreshExistedOrdersCommand;
-        public ICommand RefreshExistedOrdersCommand
-        {
-            get
-            {
-                if (_refreshExistedOrdersCommand == null)
-                {
-                    _refreshExistedOrdersCommand = new RelayCommand(RefreshComboBox);
-                }
-                return _refreshExistedOrdersCommand;
-            }
-        }
+        //private ICommand _refreshExistedOrdersCommand;
+        //public ICommand RefreshExistedOrdersCommand
+        //{
+        //    get
+        //    {
+        //        if (_refreshExistedOrdersCommand == null)
+        //        {
+        //            _refreshExistedOrdersCommand = new RelayCommand(RefreshComboBox);
+        //        }
+        //        return _refreshExistedOrdersCommand;
+        //    }
+        //}
 
 
         private ICommand _findItems;
