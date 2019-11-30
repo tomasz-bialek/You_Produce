@@ -23,7 +23,7 @@ namespace Production_Facility
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
 
         public MainWindow()
         {
@@ -31,7 +31,8 @@ namespace Production_Facility
             DataContext = new ViewModelNavigator();
 
             var dbContext = new FacilityDBContext();
-
         }
+
+
     }
 }

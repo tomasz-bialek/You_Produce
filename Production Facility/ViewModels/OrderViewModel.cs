@@ -50,21 +50,33 @@ namespace Production_Facility.ViewModels
             }
         }
 
+        private Order _orderInDB;
+        public Order OrderInDB
+        {
+            get
+            { return _orderInDB; }
+            set
+            {
+                _orderInDB = value;
+                OnPropertyChanged("OrderInDB");
+            }
+        }
 
-        private List<Order> _existedOrders;
-        public List<Order> ExistedOrders
+
+        private List<Order> _existingOrders;
+        public List<Order> ExistingOrders
         {
             get
             {
                 using (FacilityDBContext dbContext = new FacilityDBContext())
                 {
-                    return _existedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    return _existingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                 }
             }
             set
             {
-                _existedOrders = value;
-                OnPropertyChanged("ExistedOrders");
+                _existingOrders = value;
+                OnPropertyChanged("ExistingOrders");
             }
         }
 
@@ -77,6 +89,17 @@ namespace Production_Facility.ViewModels
             {
                 _components = value;
                 OnPropertyChanged("Components");
+            }
+        }
+
+        private ObservableCollection<OrderComponent> _componentsInDB;
+        public ObservableCollection<OrderComponent> ComponentsInDB
+        {
+            get { return _componentsInDB; }
+            set
+            {
+                _componentsInDB = value;
+                OnPropertyChanged("ComponentsInDB");
             }
         }
 
@@ -179,14 +202,14 @@ namespace Production_Facility.ViewModels
 
                 if (Int32.TryParse((string)objects[3], out int orderID))
                 {
-                    var order = dbContext.Orders.Where(xx => xx.OrderID == orderID).SingleOrDefault<Order>();
+                    var order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
 
                     order.Quantity = Order.Quantity;
                     order.PlannedDate = Order.PlannedDate;
 
                     var components = dbContext.OrderComponents.Where(q => q.OrderId == orderID).ToList();
 
-                    MessageBox.Show("components.Count = " + components.Count.ToString() + '\n' + "Components.Count = " + Components.Count.ToString());
+                    //MessageBox.Show("components.Count = " + components.Count.ToString() + '\n' + "Components.Count = " + Components.Count.ToString());
 
                     if(components.Count == Components.Count)
                     {
@@ -239,6 +262,8 @@ namespace Production_Facility.ViewModels
                     }
 
                     dbContext.SaveChanges();
+                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    Order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
                 }
                 else
                 {
@@ -251,11 +276,11 @@ namespace Production_Facility.ViewModels
                         dbContext.OrderComponents.Add(order);
                     }
                     dbContext.SaveChanges();
-
+                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                     Order = newOrder;
                 }
 
-                ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                
 
             }
 
@@ -323,8 +348,6 @@ namespace Production_Facility.ViewModels
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-
-
                 if (Components != null)
                     Components.Clear();
 
@@ -334,28 +357,12 @@ namespace Production_Facility.ViewModels
 
                     Components = new ObservableCollection<OrderComponent>(orderComponents);
 
-
-                    //Order = recipe.GetRecipe(productionOrder.OrderComposition);
-
                     Order = dbContext.Orders.SingleOrDefault(q => q.OrderID == orderID);
                     Item = dbContext.Items.FirstOrDefault(i => i.Number == Order.OwnerKey);
                 }
-
-
-                //int orderID = Convert.ToInt32((string)obj);
-
-
             }
 
         }
-
-        //private void RefreshComboBox(object obj)
-        //{
-        //    using (FacilityDBContext dbContext = new FacilityDBContext())
-        //    {
-        //        ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
-        //    }
-        //}
 
         private bool Can_ProdOrderChosen_Execute(object obj)
         {
@@ -390,16 +397,16 @@ namespace Production_Facility.ViewModels
         }
 
 
-        private ICommand _existedOrderChosenCommand;
-        public ICommand ExistedOrderChosenCommand
+        private ICommand _existingOrderChosenCommand;
+        public ICommand ExistingOrderChosenCommand
         {
             get
             {
-                if (_existedOrderChosenCommand == null)
+                if (_existingOrderChosenCommand == null)
                 {
-                    _existedOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
+                    _existingOrderChosenCommand = new RelayCommand(ProdOrderChosen, Can_ProdOrderChosen_Execute);
                 }
-                return _existedOrderChosenCommand;
+                return _existingOrderChosenCommand;
             }
         }
 

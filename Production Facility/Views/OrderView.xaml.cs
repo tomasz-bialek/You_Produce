@@ -27,7 +27,9 @@ namespace Production_Facility.Views
 
         private void MainComboBox_DropDownClosed(object sender, EventArgs e)
         {
-            comboBox.IsEnabled = false;
+            comboBox.IsReadOnly = true;
+            comboBox.IsTextSearchEnabled = false;
+            comboBoxBorder.BorderBrush = Brushes.Gray;
             masterItemHeader.Text = "Master Item";
         }
     }

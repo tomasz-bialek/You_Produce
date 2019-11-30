@@ -22,6 +22,7 @@ namespace Production_Facility.Models
 
         public SectionType Section { get; set; }
 
+
         public Item(string number, string name, string unit, string section)
         {
             this.Number = number;
