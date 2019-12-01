@@ -106,10 +106,10 @@
                             </Border>
                         </GroupBox>
                         <GroupBox Header="Quantity" Width="90" BorderThickness="0">
-                            <TextBox Name="quantityTextBox" Text="{Binding Order.Quantity}" BorderBrush="Blue" BorderThickness="1" HorizontalContentAlignment="Center" />
+                            <TextBox Name="quantityTextBox" Text="{Binding Order.Quantity,Mode=OneWay}" BorderBrush="Blue" BorderThickness="1" HorizontalContentAlignment="Center" />
                         </GroupBox>
                         <GroupBox Header="Unit" Width="44"  BorderThickness="0">
-                            <TextBox Name="unit_TextBox" Text="{Binding Item.Unit}" Width="32" Style="{StaticResource tBoxReadOnly}"   />
+                            <TextBox Name="unit_TextBox" Text="{Binding MasterItem.Unit}" Width="32" Style="{StaticResource tBoxReadOnly}"   />
                         </GroupBox>
                         <GroupBox Header="Order ID" Width="90"  BorderThickness="0">
                             <TextBox Name="id_TextBox" Text="{Binding Order.OrderID}" Width="Auto" Style="{StaticResource tBoxReadOnly}" />
@@ -118,16 +118,16 @@
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
                         <GroupBox Header="Item Name" Width="330"  BorderThickness="0" >
-                            <TextBox Name="itemName" Text="{Binding Item.Name}" Height="{Binding ElementName=comboBox, Path=Height}" IsReadOnly="True"/>
+                            <TextBox Name="itemName" Text="{Binding MasterItem.Name}" Height="{Binding ElementName=comboBox, Path=Height}" IsReadOnly="True"/>
                         </GroupBox>
                         <GroupBox Header="Section" Width="90"  BorderThickness="0">
-                            <TextBox Name="section_TextBox" Text="{Binding Item.Section}" Style="{StaticResource tBoxReadOnly}"   />
+                            <TextBox Name="section_TextBox" Text="{Binding MasterItem.Section}" Style="{StaticResource tBoxReadOnly}"   />
                         </GroupBox>
                         <GroupBox Width="44" BorderThickness="0">
-                            <DatePicker Name="planned_DatePicker" VerticalAlignment="Bottom" BorderBrush="Blue" BorderThickness="1"   SelectedDate="{Binding Order.PlannedDate}"/>
+                            <DatePicker Name="planned_DatePicker" VerticalAlignment="Bottom" BorderBrush="Blue" BorderThickness="1"   SelectedDate="{Binding Order.PlannedDate,Mode=OneWay}"/>
                         </GroupBox>
                         <GroupBox Header="Planned Date" Width="90" BorderThickness="0"  >
-                            <TextBox Text="{Binding ElementName=planned_DatePicker,Path=SelectedDate,StringFormat={}{0:yyyy-MM-dd}}" Style="{StaticResource tBoxReadOnly}"/>
+                            <TextBox Name="date_TextBox" Text="{Binding ElementName=planned_DatePicker,Path=SelectedDate,Mode=OneWay,StringFormat={}{0:yyyy-MM-dd}}" Style="{StaticResource tBoxReadOnly}"/>
                         </GroupBox>
                     </StackPanel>
                     <Button Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="20,0,10,-11" Content="SAVE" Command="{Binding SaveOrderCommand}" >
@@ -135,7 +135,7 @@
                             <MultiBinding Converter="{StaticResource multiBidingConverter}">
                                 <Binding Path="Text" ElementName="comboBox"/>
                                 <Binding Path="Text" ElementName="quantityTextBox"/>
-                                <Binding Path="SelectedDate" ElementName="planned_DatePicker"/>
+                                <Binding Path="Text" ElementName="date_TextBox"/>
                                 <Binding Path="Text" ElementName="id_TextBox"/>
                             </MultiBinding>
                         </Button.CommandParameter>
@@ -166,7 +166,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Line" Binding="{Binding Line}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Key" Binding="{Binding ComponentKey}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Name" FontWeight="Bold"  Binding="{Binding ComponentName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Name" FontWeight="Bold" IsReadOnly="True"  Binding="{Binding ComponentName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
