@@ -15,27 +15,15 @@ namespace Production_Facility.ViewModels
     public class OrderViewModel : INotifyPropertyChanged
     {
         private Item _item;
-        public Item MasterItem
+        public Item Item
         {
             get { return _item; }
             set
             {
                 _item = value;
-                OnPropertyChanged("MasterItem");
+                OnPropertyChanged("Item");
             }
         }
-
-        private Item this [string key]
-        {
-            get
-            {
-                using (var dbContext = new FacilityDBContext())
-                {
-                    return dbContext.Items.SingleOrDefault(q => q.Number == key);
-                }
-            }
-        }
-
 
 
         private List<Item> _itemsFound = new List<Item>();
@@ -59,6 +47,18 @@ namespace Production_Facility.ViewModels
             {
                 _order = value;
                 OnPropertyChanged("Order");
+            }
+        }
+
+        private Order _orderInDB;
+        public Order OrderInDB
+        {
+            get
+            { return _orderInDB; }
+            set
+            {
+                _orderInDB = value;
+                OnPropertyChanged("OrderInDB");
             }
         }
 
@@ -134,7 +134,7 @@ namespace Production_Facility.ViewModels
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                MasterItem = this[(string)obj];
+                Item = dbContext.Items.FirstOrDefault(q => q.Number == (string)obj);
             }  
         }
 
@@ -190,19 +190,26 @@ namespace Production_Facility.ViewModels
             {
                 var objects = (object[])obj;
 
-                if (!DateTime.TryParse(objects[2].ToString(), out DateTime date))
+                DateTime date;
+                try
+                {
+                    DateTime.TryParse(objects[2].ToString(), out date);
+                }
+                catch(Exception e)
+                {
                     date = DateTime.Now;
-
-
+                }
 
                 if (Int32.TryParse((string)objects[3], out int orderID))
                 {
                     var order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
 
-                    order.Quantity = Convert.ToInt32(objects[1]);
-                    order.PlannedDate = date; 
+                    order.Quantity = Order.Quantity;
+                    order.PlannedDate = Order.PlannedDate;
 
                     var components = dbContext.OrderComponents.Where(q => q.OrderId == orderID).ToList();
+
+                    //MessageBox.Show("components.Count = " + components.Count.ToString() + '\n' + "Components.Count = " + Components.Count.ToString());
 
                     if(components.Count == Components.Count)
                     {
@@ -250,45 +257,13 @@ namespace Production_Facility.ViewModels
 
                         for (int i = components.Count; i < Components.Count; i++)
                         {
-                            var key = (string)objects[0];
-
-                            var item = this[key];
-
-                            Components[i].OwnerKey = key;
-                            Components[i].OwnerName = item.Name;
-                            Components[i].OrderId = orderID;
-
-                            if (this[Components[i].ComponentKey] != null)
-                            {
-                                Components[i].ComponentName = this[Components[i].ComponentKey].Name;
-                                dbContext.OrderComponents.Add(Components[i]);
-                            }
-                            else
-                                MessageBox.Show("Item " + Components[i].ComponentKey + " don't exist !");
-
-
+                            dbContext.OrderComponents.Add(Components[i]);
                         }
                     }
 
                     dbContext.SaveChanges();
-                    ExistingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                     Order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
-
-                    Components = SetComponents(orderID);
-
-                    //try
-                    //{
-                    //    dbContext.SaveChanges();
-                    //    ExistingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
-                    //    Order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
-
-                    //    Components = SetComponents(orderID);
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    MessageBox.Show("exception");
-                    //}
-
                 }
                 else
                 {
@@ -301,40 +276,14 @@ namespace Production_Facility.ViewModels
                         dbContext.OrderComponents.Add(order);
                     }
                     dbContext.SaveChanges();
-                    ExistingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                     Order = newOrder;
-
-                    Components = SetComponents(Order.OrderID);
-                }
-            }
-        }
-
-        private ObservableCollection <OrderComponent> SetComponents (int id)
-        {
-            using (var dbContext = new FacilityDBContext())
-            {
-                var orderComponents = dbContext.OrderComponents.Where(q => q.OrderId == id).ToList();
-
-                ComponentsInDB = new ObservableCollection<OrderComponent>(orderComponents);
-
-                var components = new ObservableCollection<OrderComponent>();
-
-                foreach (OrderComponent oc in orderComponents)
-                {
-                    components.Add(new OrderComponent()
-                    {
-                        OrderId = oc.OrderId,
-                        Line = oc.Line,
-                        ComponentKey = oc.ComponentKey,
-                        ComponentName = oc.ComponentName,
-                        OwnerKey = oc.OwnerKey,
-                        OwnerName = oc.OwnerName,
-                        Quantity = oc.Quantity
-                    });
                 }
 
-                return components;
+                
+
             }
+
         }
 
         public void ProduceOrder(object obj)
@@ -390,86 +339,11 @@ namespace Production_Facility.ViewModels
                     dbContext.SaveChanges();
                     MessageBox.Show(String.Format("WYPRODUKOWANO : \n\n | {0} | \n\n | {1} | \n\n w ilości | {2} {3} |)", newStockItem.Number,newStockItem.Name, newStockItem.QTotal, newStockItem.Unit));
                 }
+
+
             }
+
         }
-
-
-        public bool Can_SaveOrder_Execute (object obj)
-        {
-            using (var dbContext = new FacilityDBContext())
-            {
-                var objects = (object[])obj;
-
-
-
-                if (objects == null)
-                    return false;
-                else
-                {
-                    if(objects[0] != null)
-                    {
-                        var key = (string)objects[0];
-
-                        //New Order
-                        if (Int32.TryParse(objects[1].ToString(), out int quantity) && DateTime.TryParse(objects[2].ToString(), out DateTime date))
-                        {
-                            if (quantity != Order.Quantity || date.ToShortDateString() != Order.PlannedDate.ToShortDateString())
-                                return true;
-                            else if (!Int32.TryParse(objects[3].ToString(), out int id) && Int32.TryParse(objects[1].ToString(), out int quant) && dbContext.Recipes.Any(xx => xx.RecipeOwner == key) && Components != null)
-                                return true;
-                            else if (ComponentsInDB != null)
-                            {
-                                if (Components.Count == ComponentsInDB.Count)
-                                {
-                                    bool isComponentsCollectionsEqual = false;
-
-                                    for (int i = 0; i < ComponentsInDB.Count; i++)
-                                    {
-                                        if (ComponentsInDB[i].Line != Components[i].Line || ComponentsInDB[i].ComponentKey != Components[i].ComponentKey
-                                            || ComponentsInDB[i].Quantity != Components[i].Quantity)
-                                            isComponentsCollectionsEqual = true;
-                                    }
-
-                                    return isComponentsCollectionsEqual;
-                                }
-                                else
-                                    return true;
-
-                                
-                            }
-                            return false;
-                        }
-                        else if (!Int32.TryParse(objects[3].ToString(), out int id) && Int32.TryParse(objects[1].ToString(), out int quant) && dbContext.Recipes.Any(xx => xx.RecipeOwner == key) && Components != null)
-                            return true;
-                        else if (Order == null)//|| OrderInDB == null
-                            return false;
-                        else
-                        {
-                            if (ComponentsInDB != null)
-                            {
-                                bool isComponentsCollectionsEqual = false;
-
-                                for (int i = 0; i < ComponentsInDB.Count; i++)
-                                {
-                                    if (ComponentsInDB[i].Line != Components[i].Line || ComponentsInDB[i].ComponentKey != Components[i].ComponentKey
-                                        || ComponentsInDB[i].Quantity != Components[i].Quantity)
-                                        isComponentsCollectionsEqual = true;
-                                }
-
-                                return isComponentsCollectionsEqual;
-                            }
-
-                            else
-                                return false;
-                        }
-                    }
-                    else
-                        return false;
-                }
-            }
-        }
-
-
         public void ProdOrderChosen(object obj)
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
@@ -481,29 +355,10 @@ namespace Production_Facility.ViewModels
                 {
                     var orderComponents = dbContext.OrderComponents.Where(q => q.OrderId == orderID).ToList();
 
-                    ComponentsInDB = new ObservableCollection<OrderComponent>(orderComponents);
-
-                    Components = new ObservableCollection<OrderComponent>();
-
-                    foreach (OrderComponent oc in ComponentsInDB)
-                    {
-                        Components.Add(new OrderComponent()
-                        {
-                            OrderId = oc.OrderId,
-                            Line = oc.Line,
-                            ComponentKey = oc.ComponentKey,
-                            ComponentName = oc.ComponentName,
-                            OwnerKey = oc.OwnerKey,
-                            OwnerName = oc.OwnerName,
-                            Quantity = oc.Quantity
-                        });
-                    }
+                    Components = new ObservableCollection<OrderComponent>(orderComponents);
 
                     Order = dbContext.Orders.SingleOrDefault(q => q.OrderID == orderID);
-
-                    MasterItem = this[Order.OwnerKey];
-
-                    //MasterItem = dbContext.Items.FirstOrDefault(i => i.Number == Order.OwnerKey);
+                    Item = dbContext.Items.FirstOrDefault(i => i.Number == Order.OwnerKey);
                 }
             }
 
@@ -521,13 +376,13 @@ namespace Production_Facility.ViewModels
         {
             using (FacilityDBContext dbContext = new FacilityDBContext())
             {
-                var objects = (object[])obj;
-                if (objects == null || objects[0] == null || objects[1] == null)
+                var view = (object[])obj;
+                if (view == null || view[0] == null || view[1] == null)
                     return false;
 
-                string key = (string)objects[0];
+                string key = (string)view[0];
 
-                bool isInteger = int.TryParse((string)objects[1], out int quantity);
+                bool isInteger = int.TryParse((string)view[1], out int quantity);
 
                 if (isInteger && dbContext.Recipes.Where(xx => xx.RecipeOwner == key).Any())
                 {
@@ -554,6 +409,20 @@ namespace Production_Facility.ViewModels
                 return _existingOrderChosenCommand;
             }
         }
+
+
+        //private ICommand _refreshExistedOrdersCommand;
+        //public ICommand RefreshExistedOrdersCommand
+        //{
+        //    get
+        //    {
+        //        if (_refreshExistedOrdersCommand == null)
+        //        {
+        //            _refreshExistedOrdersCommand = new RelayCommand(RefreshComboBox);
+        //        }
+        //        return _refreshExistedOrdersCommand;
+        //    }
+        //}
 
 
         private ICommand _findItems;
@@ -605,7 +474,7 @@ namespace Production_Facility.ViewModels
             {
                 if (_SaveOrderCommand == null)
                 {
-                    _SaveOrderCommand = new RelayCommand(SaveOrder, Can_SaveOrder_Execute);
+                    _SaveOrderCommand = new RelayCommand(SaveOrder);
                 }
                 return _SaveOrderCommand;
             }
