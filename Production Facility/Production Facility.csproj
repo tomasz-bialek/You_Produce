@@ -130,6 +130,18 @@
     <Compile Include="Migrations\201911211350357_VirtualOrder.Designer.cs">
       <DependentUpon>201911211350357_VirtualOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912021415121_fromRevert.cs" />
+    <Compile Include="Migrations\201912021415121_fromRevert.Designer.cs">
+      <DependentUpon>201912021415121_fromRevert.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912021545023_FKz.cs" />
+    <Compile Include="Migrations\201912021545023_FKz.Designer.cs">
+      <DependentUpon>201912021545023_FKz.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912041818238_ReconstructionStock.cs" />
+    <Compile Include="Migrations\201912041818238_ReconstructionStock.Designer.cs">
+      <DependentUpon>201912041818238_ReconstructionStock.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\OrderComponent.cs" />
     <Compile Include="Models\RecipeComponent.cs" />
@@ -237,6 +249,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911211350357_VirtualOrder.resx">
       <DependentUpon>201911211350357_VirtualOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912021415121_fromRevert.resx">
+      <DependentUpon>201912021415121_fromRevert.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912021545023_FKz.resx">
+      <DependentUpon>201912021545023_FKz.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912041818238_ReconstructionStock.resx">
+      <DependentUpon>201912041818238_ReconstructionStock.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

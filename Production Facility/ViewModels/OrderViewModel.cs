@@ -262,7 +262,7 @@ namespace Production_Facility.ViewModels
                     }
 
                     dbContext.SaveChanges();
-                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    ExistingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                     Order = dbContext.Orders.SingleOrDefault(xx => xx.OrderID == orderID);
                 }
                 else
@@ -276,7 +276,7 @@ namespace Production_Facility.ViewModels
                         dbContext.OrderComponents.Add(order);
                     }
                     dbContext.SaveChanges();
-                    ExistedOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
+                    ExistingOrders = dbContext.Orders.Where(q => q.OrderStatus == "PLANNED").ToList();
                     Order = newOrder;
                 }
 
@@ -334,10 +334,12 @@ namespace Production_Facility.ViewModels
                     var prOrder = dbContext.Orders.FirstOrDefault(q => q.OrderID == temp_orderID);
                     prOrder.OrderStatus = "CLOSED";
                     prOrder.ClosingDate = DateTime.Now;
-                    var newStockItem = new StockItem(key, item.Name, quantity.ToString(), "WR-PR-WG", uCost.ToString(), DateTime.Now.ToString(), DateTime.Now.ToString(), DateTime.Now.AddYears(2).ToString(), item.Unit.ToString(), item.Section.ToString(),orderID);
+                    //var newStockItemM = new StockItem(key, item.Name, quantity.ToString(), "WR-PR-WG", uCost.ToString(), DateTime.Now.ToString(), DateTime.Now.ToString(), DateTime.Now.AddYears(2).ToString(), item.Unit.ToString(), item.Section.ToString(), orderID);
+
+                    var newStockItem = new StockItem(key, (double)quantity, uCost, orderID, "WR-PR-WG");
                     dbContext.StockItems.Add(newStockItem);
                     dbContext.SaveChanges();
-                    MessageBox.Show(String.Format("WYPRODUKOWANO : \n\n | {0} | \n\n | {1} | \n\n w ilości | {2} {3} |)", newStockItem.Number,newStockItem.Name, newStockItem.QTotal, newStockItem.Unit));
+                    MessageBox.Show(String.Format("WYPRODUKOWANO : \n\n | {0} | \n\n | {1} | \n\n w ilości | {2} {3} |)", newStockItem.Number, newStockItem.Item.Name, newStockItem.QTotal, newStockItem.Item.Unit));
                 }
 
 

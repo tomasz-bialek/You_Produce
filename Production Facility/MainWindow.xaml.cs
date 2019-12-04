@@ -31,6 +31,7 @@ namespace Production_Facility
             DataContext = new ViewModelNavigator();
 
             var dbContext = new FacilityDBContext();
+
         }
 
 

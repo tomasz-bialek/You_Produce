@@ -35,7 +35,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Margin="10" FontSize="20" Text="{Binding Name}" Foreground="Blue" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Margin="10" FontSize="20" Text="Stock" Foreground="Blue" FontWeight="Bold"/>
             <WrapPanel Orientation="Horizontal" Grid.Row="1" >
                 <GroupBox Header="Section" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
                     <ComboBox Name="sectionComboBox" ItemsSource="{Binding Source={StaticResource enumSectionType}}" Margin="5,2"/>
@@ -68,22 +68,22 @@
                     <TextBox Name="tCostTextBox"  Margin="5,2"/>
                 </GroupBox>
                 <GroupBox Header="Incoming Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
-                    <Grid Margin="5,2" >
-                        <DatePicker Name="incoming_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
-                        <DatePicker Name="incoming_DatePicker_2" Width="106" HorizontalAlignment="Right" />
-                    </Grid>
+                    <StackPanel Orientation="Horizontal" Margin="5,2" >
+                        <DatePicker Name="incoming_DatePicker" Width="32" HorizontalAlignment="Left"/>
+                        <TextBox Name="incomingDate_TextBox" Width="186" Text="{Binding ElementName=incoming_DatePicker, Path=SelectedDate,StringFormat=dd.MM.yyyy,Mode=OneWay}" HorizontalContentAlignment="Center"/>
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Expiration Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
-                    <Grid Margin="5,2" >
-                        <DatePicker Name="expiration_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
-                        <DatePicker Name="expiration_DatePicker_2" Width="106" HorizontalAlignment="Right" />
-                    </Grid>
+                    <StackPanel Orientation="Horizontal" Margin="5,2" >
+                        <DatePicker Name="expiration_DatePicker" Width="32" HorizontalAlignment="Left"/>
+                        <TextBox Name="expirationDate_TextBox" Width="186" Text="{Binding ElementName=expiration_DatePicker, Path=SelectedDate,StringFormat=dd.MM.yyyy,Mode=OneWay}" HorizontalContentAlignment="Center"/>
+                    </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Last Action Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
-                    <Grid Margin="5,2" >
-                        <DatePicker Name="lastAction_DatePicker_1" Width="106" HorizontalAlignment="Left"/>
-                        <DatePicker Name="lastAction_DatePicker_2" Width="106" HorizontalAlignment="Right" />
-                    </Grid>
+                <GroupBox Header="Last Action Date" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240" >
+                    <StackPanel Orientation="Horizontal" Margin="5,2" >
+                        <DatePicker Name="lastAction_DatePicker" Width="32" HorizontalAlignment="Left"/>
+                        <TextBox Name="lastActionDate_TextBox" Width="186"  HorizontalContentAlignment="Center" Text="{Binding ElementName=lastAction_DatePicker, Path=SelectedDate,StringFormat=dd.MM.yyyy,Mode=OneWay}"/> 
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Location" BorderThickness="0" FontWeight="SemiBold" Foreground="DimGray" Margin="5,0" Width="240">
                     <TextBox Name="locationTextBox"  Margin="5,2"/>
@@ -104,27 +104,27 @@
                         <Binding Path="Text" ElementName="qAvailableTextBox"/>
                         <Binding Path="Text" ElementName="uCostTextBox"/>
                         <Binding Path="Text" ElementName="tCostTextBox"/>
-                        <Binding Path="SelectedDate" ElementName="incoming_DatePicker_1"/>
-                        <Binding Path="SelectedDate" ElementName="incoming_DatePicker_2"/>
-                        <Binding Path="SelectedDate" ElementName="expiration_DatePicker_1"/>
-                        <Binding Path="SelectedDate" ElementName="expiration_DatePicker_2"/>
-                        <Binding Path="SelectedDate" ElementName="lastAction_DatePicker_1"/>
-                        <Binding Path="SelectedDate" ElementName="lastAction_DatePicker_2"/>
+                        <Binding Path="Text" ElementName="incomingDate_TextBox"/>
+                        <Binding Path="Text" ElementName="expirationDate_TextBox"/>
+                        <Binding Path="Text" ElementName="lastActionDate_TextBox"/>
 
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
             <DataGrid Grid.Row="3" ItemsSource="{Binding StockItems}" Margin="10" AutoGenerateColumns="false"  >
-                <DataGrid.Columns>
-                    
+            <DataGrid.Columns>
+                    <DataGridTextColumn Header="Number" Binding="{Binding Item.Number}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Item.Name}" />
+                    <DataGridTextColumn Header="Unit" Binding="{Binding Item.Unit}" />
+                    <DataGridTextColumn Header="Section" Binding="{Binding Item.Section}" />
                     <DataGridTextColumn Header="Unit Cost" Binding="{Binding UnitCost}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Total Cost" Binding="{Binding TotalCost}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Q Total" Binding="{Binding QTotal}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Q Reserved" Binding="{Binding QReserved}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Q Available" Binding="{Binding QAvailable}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Last Use Date" Binding="{Binding LastActionDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Income Date" Binding="{Binding IncomingDate,StringFormat={}{0:yyyy-MM-dd}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Last Use Date" Binding="{Binding LastActionDate,StringFormat={}{0:dd.MM.yyyy}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate,StringFormat={}{0:dd.MM.yyyy}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Income Date" Binding="{Binding IncomingDate,StringFormat={}{0:dd.MM.yyyy}}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Location" Binding="{Binding Location}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Batch" Binding="{Binding BatchNumber}"></DataGridTextColumn>
                 </DataGrid.Columns>
